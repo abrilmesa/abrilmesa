@@ -68,3 +68,4 @@ Then open http://localhost:8000. Double-clicking `index.html` may block local da
 ## Project status
 
 Prepared and checked locally. GitHub upload and Vercel deployment must be completed separately. This version uses a real-data file rather than a live Postgres connection.
+Deployment target: Vercel project hello-world.
