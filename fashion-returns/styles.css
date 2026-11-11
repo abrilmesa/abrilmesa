@@ -19,3 +19,48 @@
 
 .monthly-data{font-size:11px;color:#665078;margin-top:8px}.monthly-data summary{cursor:pointer;padding:7px 0}.monthly-data table{font-size:11px}.monthly-data th,.monthly-data td{padding:10px 8px}
 @media(max-width:650px){.trend text{font-size:16px}.trend .month-tick{display:none}.trend .month-0,.trend .month-3,.trend .month-6,.trend .month-9,.trend .month-11{display:block}.trend .year-tick{font-size:14px}}
+
+/* Block02 Exercise04: observed readability, keyboard focus and feedback fixes. */
+.help{min-width:32px;width:32px;height:32px;font-size:14px;line-height:28px;flex-shrink:0}
+.kpi-label{line-height:1.5;min-height:38px}
+.filters label{font-size:11px}.kpi-note,.chart-sub,.chart-detail,.legend,.category-row small,.context{font-size:12px}
+.connection small{font-size:11px;line-height:1.6}.connection div{font-size:12px}
+.comparison-title{font-size:11px}.comparison-grid span,.comparison-grid small,.comparison-basis{font-size:11px}
+.kpi-link,.chart-action{font-size:12px;line-height:1.6;min-height:32px}.text-button{min-height:40px}
+.chart-summary{font-size:12px;line-height:1.7;color:#716977;margin:10px 0 5px}
+.monthly-data{font-size:13px}.monthly-data summary{padding:12px 0;min-height:44px}.monthly-data table{font-size:13px}
+.monthly-data caption{font-size:12px;text-align:left;line-height:1.7;padding:10px 8px;color:#716977}
+.trend .point .focus-ring{fill:none;stroke:#332c3c;stroke-width:3;opacity:0;pointer-events:none}
+.trend .point:focus .focus-ring{r:11;opacity:1}.trend .point:hover .focus-ring{r:11}
+.trend .point .point-dot{stroke-width:2}
+#page-title:focus-visible{outline:3px solid #665078;outline-offset:7px;border-radius:3px}
+.table-scroll:focus-visible,summary:focus-visible{outline:3px solid #665078;outline-offset:4px;border-radius:3px}
+.error .button{margin-top:10px}.error{font-size:14px}.loading{font-size:15px;line-height:1.8}
+@media(max-width:650px){
+  .filters label{font-size:11px}.filters select{font-size:14px;min-height:44px}
+  .sidebar nav button{font-size:12px;min-height:44px}.connection small{font-size:11px}
+  .connection div,.connection button{font-size:12px}.context{font-size:12px}
+  .source-label p,.badge{font-size:11px}.kpi-label{font-size:12px}
+  .kpi{min-height:225px}.kpi-value{font-size:30px}.kpi-value.money{font-size:22px}
+  .kpi-note{font-size:12px}.kpi-link{font-size:11px}.chart-sub,.chart-detail,.legend,.chart-summary{font-size:12px}
+  .trend text{font-size:22px}.trend .year-tick{font-size:20px}.trend .last-month{display:block}
+  .category-row small{font-size:12px}.category-axis{font-size:11px}.comparison-grid strong{font-size:22px}
+  .comparison-grid span,.comparison-grid small,.comparison-basis{font-size:11px}
+  .actions p{font-size:13px}.button{font-size:13px;min-height:44px}
+  footer{font-size:11px}.eyebrow{font-size:10px}.monthly-data th{font-size:11px}
+}
+@media(max-width:359px){
+  .kpi-value.money{font-size:19px;letter-spacing:-.7px}.kpi-value{font-size:28px}
+  .kpi-label{font-size:11px;gap:3px}.help{width:28px;min-width:28px;height:28px;line-height:24px}
+  .comparison{padding:12px 10px}.comparison-grid{gap:6px}.comparison-grid strong{font-size:19px}
+  .comparison-grid span,.comparison-grid small{font-size:10px}
+}
+@media(max-width:650px){
+  /* Keep visual order aligned with keyboard order: category, product, size, Reset. */
+  .filters div:nth-child(3),.filters div:nth-child(4){grid-column:1/-1;grid-row:auto}
+  .filters div:nth-child(5){grid-column:1;grid-row:auto}
+  .filters button{grid-column:2;grid-row:auto}
+}
+/* Keep refreshed analytical values immediately readable. */
+.card{animation:none}
+.kpi.primary .kpi-note{color:#655b6e}
