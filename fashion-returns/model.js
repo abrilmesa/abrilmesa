@@ -23,3 +23,15 @@ export function validate(data){
   const total=summarize(data.cohorts);if(total.sales_lines!==6229||total.sold!==7257||total.returned!==1660||total.refundCents!==11085240||total.fit!==844||returned!==total.returned||fit!==total.fit)throw Error('Data does not reconcile to frozen foundation v1.1. Keeping the last validated screen; a changed source requires revalidation.');
   return data;
 }
+
+// Internal benchmark: same product and sale cohort, with selected size excluded.
+export function sizePeerComparison(data,f){
+  if(!f.product||!f.size)return {status:'choose',message:'Select one product and one size above to compare it with the other sizes of that product.'};
+  const base=data.cohorts.filter(r=>matches(r,{...f,size:''}));
+  const selected=summarize(base.filter(r=>r.size===f.size));
+  const peers=summarize(base.filter(r=>r.size!==f.size));
+  const productName=base[0]?.product_name||data.cohorts.find(r=>r.product_id===f.product)?.product_name||f.product;
+  const sizes=['XS','S','M','L','XL'].filter(s=>s!==f.size);
+  if(!selected.sold||!peers.sold)return {status:'unavailable',selected,peers,productName,sizes,message:!selected.sold?'The selected size has no sold units in this period. A comparison cannot be calculated.':'The other sizes have no sold units in this period. A benchmark cannot be calculated.'};
+  return {status:'available',selected,peers,productName,sizes,differencePp:selected.rate-peers.rate};
+}

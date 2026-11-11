@@ -1,11 +1,11 @@
-import {MONTHS,analyze,validate} from './model.js';
+import {MONTHS,analyze,validate,sizePeerComparison} from './model.js';
 const $=id=>document.getElementById(id);
 const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=value=>Number(value).toLocaleString('en-US');
 const pct=value=>value===null?'N/A':`${value.toFixed(2)}%`;
 const usd=value=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(value);
 const monthName=(month,short=false)=>new Date(`${month}-01T12:00:00Z`).toLocaleDateString('en-GB',{month:short?'short':'long',...(short?{}:{year:'numeric'}),timeZone:'UTC'});
-let data=null,source='',retrievedAt='',view='overview';
+let data=null,source='',retrievedAt='',view='overview',comparisonMode='prior-month';
 const filters={start:MONTHS[0],end:MONTHS.at(-1),category:'',product:'',size:''};
 const definitions={
   rate:['Unit return rate','Returned units ÷ sold units × 100, for the selected original sales cohort. Only deliveries with a complete 30-day return window are eligible. Returns must occur 1–30 days after delivery and by 9 November 2026. Unknown reasons stay included. An empty sold-unit denominator displays N/A. Rates are recomputed from totals, never averaged.'],
@@ -20,7 +20,7 @@ function setBusy(busy){
   $('reload').textContent=busy?'Loading…':'Refresh data ↻';
   $('reset').disabled=busy||!data;
   $('content').setAttribute('aria-busy',String(busy));
-  document.querySelectorAll('#filters select').forEach(el=>el.disabled=busy||!data);
+  document.querySelectorAll('#filters select,#comparison-mode').forEach(el=>el.disabled=busy||!data);
   if(busy){
     $('source-status').textContent=data?'Updating data… Showing the last validated results.':'Loading and validating data…';
     if(!data)$('content').innerHTML='<p class="loading" role="status">Loading the approved data foundation… Please wait.</p>';
@@ -35,20 +35,29 @@ function setupOptions(){
   updateProducts();$('size').innerHTML='<option value="">All sizes</option>'+['XS','S','M','L','XL'].map(s=>`<option>${s}</option>`).join('');$('size').value=filters.size;
 }
 function updateProducts(){const products=[...new Map(data.cohorts.filter(r=>!filters.category||r.category===filters.category).map(r=>[r.product_id,r])).values()].sort((a,b)=>a.product_name.localeCompare(b.product_name));if(filters.product&&!products.some(p=>p.product_id===filters.product))filters.product='';$('product').innerHTML='<option value="">All products</option>'+products.map(p=>`<option value="${esc(p.product_id)}">${esc(p.product_name)}</option>`).join('');$('product').value=filters.product;}
-function restoreUrl(){const p=new URLSearchParams(location.hash.slice(1));for(const k of ['start','end'])if(MONTHS.includes(p.get(k)))filters[k]=p.get(k);if(filters.start>filters.end)filters.end=filters.start;for(const k of ['category','product','size'])filters[k]=p.get(k)||'';if(!data.cohorts.some(r=>r.category===filters.category))filters.category='';if(!data.cohorts.some(r=>r.product_id===filters.product))filters.product='';if(!['XS','S','M','L','XL'].includes(filters.size))filters.size='';view=['overview','products','reasons'].includes(p.get('view'))?p.get('view'):'overview';$('start').value=filters.start;$('end').value=filters.end;}
-function saveUrl(){const p=new URLSearchParams({view,...Object.fromEntries(Object.entries(filters).filter(([,v])=>v))});history.replaceState(null,'',`${location.pathname}${location.search}#${p}`);}
+function restoreUrl(){const p=new URLSearchParams(location.hash.slice(1));comparisonMode=p.get('comparison')==='size-peers'?'size-peers':'prior-month';for(const k of ['start','end'])if(MONTHS.includes(p.get(k)))filters[k]=p.get(k);if(filters.start>filters.end)filters.end=filters.start;for(const k of ['category','product','size'])filters[k]=p.get(k)||'';if(!data.cohorts.some(r=>r.category===filters.category))filters.category='';if(!data.cohorts.some(r=>r.product_id===filters.product))filters.product='';if(!['XS','S','M','L','XL'].includes(filters.size))filters.size='';view=['overview','products','reasons'].includes(p.get('view'))?p.get('view'):'overview';$('start').value=filters.start;$('end').value=filters.end;}
+function saveUrl(){const p=new URLSearchParams({view,comparison:comparisonMode,...Object.fromEntries(Object.entries(filters).filter(([,v])=>v))});history.replaceState(null,'',`${location.pathname}${location.search}#${p}`);}
 function kpis(t){return `<section class="kpis" aria-label="Key performance indicators">${[
   ['rate','Unit return rate',pct(t.rate),`${num(t.returned)} / ${num(t.sold)} sold units`,'products'],
   ['returned','Returned units',num(t.returned),'Within the selected sales cohort','products'],
   ['refunds','Refunded amount',usd(t.refunds),'USD · Product refunds, not profit loss','products'],
   ['fit','Fit-related share',pct(t.fitShare),`${num(t.fit)} / ${num(t.returned)} returned units`,'reasons']
 ].map(([key,title,value,note,target],i)=>`<article class="card kpi ${i===0?'primary':''}"><div class="kpi-label">${title}<button class="help" data-help="${key}" aria-label="Definition: ${title}">?</button></div><div class="kpi-value ${key==='refunds'?'money':''}" data-kpi="${key}">${value}</div><p class="kpi-note">${note}</p><button class="kpi-link" data-view="${target}">${target==='products'?'View product performance':'Explore return reasons'} ↗</button></article>`).join('')}</section>`;}
-function comparison(a){
+function priorMonthComparison(a){
   const c=a.current,p=a.previous;
   if(!p||c.rate===null||p.rate===null)return `<strong>${monthName(c.month)}: ${pct(c.rate)}</strong><small>Prior-month comparison unavailable: ${!p?'the previous month is outside source coverage.':'one cohort has no sold units.'} No target has been invented.</small>`;
   const d=c.rate-p.rate;
   return `<p class="comparison-title">LATEST MONTH VS PRIOR MONTH</p><div class="comparison-grid"><div><span>${monthName(c.month)}</span><strong>${pct(c.rate)}</strong><small>${num(c.returned)} / ${num(c.sold)} sold</small></div><div><span>${monthName(p.month)}</span><strong>${pct(p.rate)}</strong><small>${num(p.returned)} / ${num(p.sold)} sold</small></div><div><span>Change</span><strong>${d>0?'+':''}${d.toFixed(2)} <em>pp</em></strong><small>percentage points</small></div></div><p class="comparison-basis">Same category, product and size filters · complete 30-day observation windows.</p>`;
 }
+function sizeComparison(){
+  const b=sizePeerComparison(data,filters);
+  const basis=`Internal synthetic benchmark · ${monthName(filters.start)}–${monthName(filters.end)} · same product and eligibility rules. Rates are ratios of sums, not averages of size rates.`;
+  if(b.status==='choose')return `<p class="comparison-title">SIZE VS OTHER SIZES</p><p class="comparison-message">${esc(b.message)}</p><p class="comparison-basis">Choose a product and a size to define the reference. No industry target is assumed.</p>`;
+  if(b.status==='unavailable')return `<p class="comparison-title">${esc(b.productName)} · SIZE VS OTHER SIZES</p><p class="comparison-message">Comparison unavailable: ${esc(b.message)}</p><p class="comparison-basis">Zero sold-unit denominators produce N/A, not 0%. ${basis}</p>`;
+  const d=b.differencePp;
+  return `<p class="comparison-title">${esc(b.productName)} · FULL SELECTED PERIOD</p><div class="comparison-grid"><div><span>Selected size ${esc(filters.size)}</span><strong>${pct(b.selected.rate)}</strong><small>${num(b.selected.returned)} / ${num(b.selected.sold)} sold</small></div><div><span>Other sizes</span><strong>${pct(b.peers.rate)}</strong><small>${num(b.peers.returned)} / ${num(b.peers.sold)} sold</small></div><div><span>Selected − others</span><strong>${d>0?'+':''}${d.toFixed(2)} <em>pp</em></strong><small>percentage points</small></div></div><p class="comparison-basis">${basis}<br>Reference: ${esc(b.sizes.join(', '))}; size ${esc(filters.size)} is excluded. Both returned and sold units are pooled across the other sizes.<br>This flags a size to investigate; different buyers and sample sizes can affect rates. It does not prove a sizing problem.</p>`;
+}
+function comparison(a){return `<div class="comparison-control"><label for="comparison-mode">COMPARISON MODE</label><select id="comparison-mode" ${$('reload').disabled?'disabled':''}><option value="prior-month" ${comparisonMode==='prior-month'?'selected':''}>Latest month vs prior month</option><option value="size-peers" ${comparisonMode==='size-peers'?'selected':''}>Selected size vs other sizes</option></select></div><div id="comparison-result" role="status" aria-live="polite" aria-atomic="true">${comparisonMode==='size-peers'?sizeComparison():priorMonthComparison(a)}</div>`;}
 function trend(a){const w=620,h=260,L=40,R=14,T=20,B=60;const points=a.monthly;const ymax=Math.max(35,Math.ceil(Math.max(...points.map(p=>p.rate??0))/10)*10);const x=i=>points.length===1?(L+w-R)/2:L+i*(w-L-R)/(points.length-1);const y=v=>T+(ymax-v)*(h-T-B)/ymax;
   // Split at missing cohorts rather than draw a line through missing rates.
   let paths=[],path='';for(let i=0;i<points.length;i++){const p=points[i];if(p.rate===null){if(path)paths.push(path);path='';}else path+=`${path?' L':'M'}${x(i)},${y(p.rate)}`;}if(path)paths.push(path);
@@ -79,7 +88,8 @@ async function load({focusAfter=false}={}){const hadData=Boolean(data);setBusy(t
     $('freshness').textContent='No successful data read yet.';
   }
 }finally{setBusy(false);if(focusAfter){if(data&&!hadData)focusHeading();else $('reload').focus();}}}
-function reset(){Object.assign(filters,{start:MONTHS[0],end:MONTHS.at(-1),category:'',product:'',size:''});for(const key of ['start','end','category','size'])$(key).value=filters[key];updateProducts();render();}
+function reset(){comparisonMode='prior-month';Object.assign(filters,{start:MONTHS[0],end:MONTHS.at(-1),category:'',product:'',size:''});for(const key of ['start','end','category','size'])$(key).value=filters[key];updateProducts();render();}
+document.addEventListener('change',e=>{if(e.target.id!=='comparison-mode'||!data)return;comparisonMode=e.target.value==='size-peers'?'size-peers':'prior-month';render();$('comparison-mode')?.focus();});
 $('filters').addEventListener('submit',e=>e.preventDefault());$('filters').addEventListener('change',e=>{if(!data)return;const key=e.target.id;if(!Object.hasOwn(filters,key))return;filters[key]=e.target.value;if(filters.start>filters.end){if(key==='start')filters.end=filters.start;else filters.start=filters.end;$('start').value=filters.start;$('end').value=filters.end;}if(key==='category')updateProducts();render();});$('reset').onclick=()=>data&&reset();$('reload').onclick=()=>load({focusAfter:true});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-help],[data-view],[data-category],[data-month],[data-reset],[data-retry]');if(!b)return;if(b.hasAttribute('data-retry'))return load({focusAfter:true});if(b.dataset.help){const [title,text]=definitions[b.dataset.help];$('metric-title').textContent=title;$('metric-definition').textContent=text;$('metric-dialog').showModal();return;}if(!data)return;if(b.hasAttribute('data-reset')){reset();focusHeading();return;}if(b.dataset.category){filters.category=b.dataset.category;$('category').value=filters.category;updateProducts();view='products';}else if(b.dataset.month){filters.start=b.dataset.month;filters.end=b.dataset.month;$('start').value=filters.start;$('end').value=filters.end;view='products';}else if(b.dataset.view)view=b.dataset.view;render();focusHeading();});
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.point')){e.preventDefault();e.target.dispatchEvent(new MouseEvent('click',{bubbles:true}));}});
