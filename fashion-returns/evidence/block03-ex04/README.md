@@ -12,7 +12,7 @@ View changes now add browser history entries instead of replacing every screen. 
 
 ViewB labels its local reason/month evidence filter beside the KPIs. It intersects the global cohort for supporting evidence only and never changes headline denominators. It survives switching A↔B under the same cohort; changing any global filter clears it. Reset all filters clears both global/local context and the saved overview entry, so a subsequent in-app return does not undo the explicit reset.
 
-Keyboard navigation moves focus to the destination heading; heatmap cells and reason-mix segments work with Enter/Space. On narrow screens, scroll regions contain wide tables/charts, with visible horizontal-scroll instructions and keyboard focus. No record-detail access is claimed; this exercise connects the existing three screens.
+A final keyboard check exposed focus falling to the document body when Browser Back removed a selected reason panel. The hash-navigation handler now explicitly focuses the destination heading. Keyboard navigation moves focus to the destination heading; heatmap cells and reason-mix segments work with Enter/Space. On narrow screens, scroll regions contain wide tables/charts, with visible horizontal-scroll instructions and keyboard focus. No record-detail access is claimed; this exercise connects the existing three screens.
 
 ## Expected route
 
