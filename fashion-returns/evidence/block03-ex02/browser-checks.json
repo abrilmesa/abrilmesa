@@ -1,0 +1,24 @@
+{
+  "liveUrl": "https://hello-world-puce-two-10.vercel.app/fashion-returns/index.html",
+  "SupabaseConnectedLabelObserved": true,
+  "TrousersScreen": {
+    "sold": 2435,
+    "returned": 688,
+    "rateDisplayed": "28.25%"
+  },
+  "heatmapKeyboardEnter": {
+    "product": "P012",
+    "size": "XS",
+    "sold": 44,
+    "returned": 14,
+    "rateDisplayed": "31.82%"
+  },
+  "backToOverviewRestoresEntry": {
+    "category": "Trousers",
+    "start": "2025-10",
+    "end": "2026-09",
+    "product": "",
+    "size": ""
+  },
+  "recordDetail": "Selection prepared only; record access not implemented"
+}

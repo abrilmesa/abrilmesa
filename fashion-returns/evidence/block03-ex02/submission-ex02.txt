@@ -1,0 +1,9 @@
+I implemented diagnostic view A (Products & sizes) using the approved synthetic foundation v1.1 and the existing Supabase aggregate API. It inherits the overview’s original sale period, category, product and size filters.
+
+Products are ranked by returned units, with sold-unit denominators, return rates and shares of selected-cohort returns. The product-by-size heatmap displays rates and returned/sold counts in keyboard-operable cells. Small groups remain visible; zero sales displays N/A, while sales with no returns displays 0%. Not reported reasons remain included in return totals.
+
+For Trousers, October 2025–September 2026, product totals and heatmap totals both reconcile to 688 returned / 2,435 sold = 28.254620%, displayed as 28.25%, matching the overview. Cropped Trousers contributes 127 returns (18.46% of Trousers returns), with a rate of 127/385 = 32.99%. Straight Trousers contributes 117 returns but has a lower rate of 117/467 = 25.05%, showing why absolute contribution and propensity should be compared separately.
+
+I verified 22 filter selections against preserved raw sales and return records, independently of the aggregate rows. Product and heatmap sums preserve units, refunds and sales-line counts. The selected Cropped Trousers / XS cell shows 14 returns / 44 sold = 31.82%, with 37 supporting sales lines. Source-to-model count differences are zero; source-to-screen rate differences are zero when rounded to the displayed two decimals.
+
+I tested keyboard selection of the cell and Back to overview, which restores the saved overview filters and comparison mode. Product/size selection updates the visible context and URL and can be downloaded for the later sale_line_id detail layer. Individual record access is not implemented in this exercise. These synthetic patterns support investigation, not causal conclusions.
