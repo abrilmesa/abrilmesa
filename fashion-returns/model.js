@@ -35,3 +35,13 @@ export function sizePeerComparison(data,f){
   if(!selected.sold||!peers.sold)return {status:'unavailable',selected,peers,productName,sizes,message:!selected.sold?'The selected size has no sold units in this period. A comparison cannot be calculated.':'The other sizes have no sold units in this period. A benchmark cannot be calculated.'};
   return {status:'available',selected,peers,productName,sizes,differencePp:selected.rate-peers.rate};
 }
+
+// Disjoint month/product/size aggregates preserve the approved sales-line model.
+export function productDiagnostics(data,f){
+ const rows=data.cohorts.filter(r=>matches(r,f));
+ const totals=summarize(rows);
+ const products=group(rows,'product_id').sort((a,b)=>b.returned-a.returned||b.sold-a.sold||a.name.localeCompare(b.name));
+ const sizes=f.size?[f.size]:['XS','S','M','L','XL'];
+ const cells=products.flatMap(p=>sizes.map(size=>({product_id:p.product_id,product_name:p.product_name,size,...summarize(rows.filter(r=>r.product_id===p.product_id&&r.size===size))})));
+ return {totals,products,cells,sizes};
+}

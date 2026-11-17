@@ -80,3 +80,10 @@
 .selection-actions button:disabled{cursor:default;opacity:.55}
 @media(max-width:1100px){.selection-actions{grid-template-columns:1fr 1fr}.selection-actions>div{grid-column:1/-1}}
 @media(max-width:650px){.selection-actions{grid-template-columns:1fr;padding:16px}.selection-actions>div{grid-column:auto}.selection-actions .button{width:100%;font-size:13px}}
+
+/* Block03: paired contribution/rate diagnostics with explicit counts. */
+.diagnostic-section{margin-bottom:22px}.product-ranking{display:grid;gap:8px;margin-top:18px}
+.rank-row{display:grid;grid-template-columns:minmax(120px,1fr) minmax(50px,1.7fr) minmax(140px,1fr);align-items:center;gap:20px;width:100%;border:0;border-bottom:1px solid var(--border);background:white;text-align:left;color:inherit;padding:14px 4px}
+.rank-row:hover{background:#f7f3f9}.rank-name{font-weight:700;font-size:14px}.rank-name small,.rank-values small{display:block;font-size:12px;font-weight:400;margin-top:5px;line-height:1.5;color:#655b6e}.rank-track{background:#f0edf3;height:20px;border-radius:4px}.rank-track>span{display:block;background:#80668f;height:100%;border-radius:4px}.rank-values{font-size:13px;text-align:right}
+.heatmap caption{text-align:left;padding:12px 0;font-size:12px;color:#716977}.heatmap td{padding:6px}.heatmap th{white-space:normal;min-width:110px}.heatmap button{width:100%;min-width:94px;min-height:68px;border:1px solid #c8b8d1;border-radius:5px;color:#332c3c;padding:10px;font-size:14px}.heatmap button small{display:block;margin-top:6px;font-size:12px}.reconcile{display:flex;gap:30px;flex-wrap:wrap;font-size:14px}.reconcile dt{font-size:12px;color:#716977;margin-bottom:8px}.reconcile dd{margin:0;font-weight:700}.evidence-selection p{font-size:13px;line-height:1.7;color:#655b6e}.evidence-selection .button{margin:7px 7px 0 0}
+@media(max-width:650px){.rank-row{grid-template-columns:1fr 1fr;gap:10px}.rank-track{grid-row:2;grid-column:1/-1}.rank-name{font-size:13px}.rank-values{font-size:12px}.rank-values small{font-size:11px}.diagnostic-section{padding:18px}.reconcile{display:grid;gap:15px}}

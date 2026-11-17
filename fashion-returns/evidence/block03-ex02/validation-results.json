@@ -1,0 +1,162 @@
+{
+  "passed": true,
+  "testedSelections": 22,
+  "source": "Independent preserved raw sales and returns, matched against dashboard aggregates; no new direct source query claimed",
+  "filters": {
+    "start": "2025-10",
+    "end": "2026-09",
+    "category": "Trousers",
+    "product": "",
+    "size": ""
+  },
+  "totals": {
+    "sold": 2435,
+    "returned": 688,
+    "refundCents": 4784440,
+    "fit": 338,
+    "sales_lines": 2080,
+    "refunds": 47844.4,
+    "rate": 28.254620123203285,
+    "fitShare": 49.127906976744185
+  },
+  "ranking": [
+    {
+      "name": "P012",
+      "sold": 385,
+      "returned": 127,
+      "refundCents": 848700,
+      "fit": 58,
+      "sales_lines": 333,
+      "refunds": 8487,
+      "rate": 32.98701298701299,
+      "fitShare": 45.669291338582674,
+      "product_id": "P012",
+      "product_name": "Cropped Trousers",
+      "category": "Trousers"
+    },
+    {
+      "name": "P009",
+      "sold": 467,
+      "returned": 117,
+      "refundCents": 887960,
+      "fit": 54,
+      "sales_lines": 403,
+      "refunds": 8879.6,
+      "rate": 25.053533190578158,
+      "fitShare": 46.15384615384615,
+      "product_id": "P009",
+      "product_name": "Straight Trousers",
+      "category": "Trousers"
+    },
+    {
+      "name": "P010",
+      "sold": 323,
+      "returned": 105,
+      "refundCents": 494410,
+      "fit": 51,
+      "sales_lines": 270,
+      "refunds": 4944.1,
+      "rate": 32.5077399380805,
+      "fitShare": 48.57142857142857,
+      "product_id": "P010",
+      "product_name": "Wide Leg Trousers",
+      "category": "Trousers"
+    },
+    {
+      "name": "P016",
+      "sold": 296,
+      "returned": 91,
+      "refundCents": 692040,
+      "fit": 49,
+      "sales_lines": 253,
+      "refunds": 6920.4,
+      "rate": 30.743243243243242,
+      "fitShare": 53.84615384615385,
+      "product_id": "P016",
+      "product_name": "Linen Trousers",
+      "category": "Trousers"
+    },
+    {
+      "name": "P015",
+      "sold": 352,
+      "returned": 82,
+      "refundCents": 623310,
+      "fit": 46,
+      "sales_lines": 305,
+      "refunds": 6233.1,
+      "rate": 23.295454545454547,
+      "fitShare": 56.09756097560975,
+      "product_id": "P015",
+      "product_name": "Cargo Trousers",
+      "category": "Trousers"
+    },
+    {
+      "name": "P014",
+      "sold": 254,
+      "returned": 82,
+      "refundCents": 541650,
+      "fit": 35,
+      "sales_lines": 214,
+      "refunds": 5416.5,
+      "rate": 32.28346456692913,
+      "fitShare": 42.68292682926829,
+      "product_id": "P014",
+      "product_name": "Relaxed Trousers",
+      "category": "Trousers"
+    },
+    {
+      "name": "P011",
+      "sold": 178,
+      "returned": 47,
+      "refundCents": 411180,
+      "fit": 21,
+      "sales_lines": 153,
+      "refunds": 4111.8,
+      "rate": 26.40449438202247,
+      "fitShare": 44.680851063829785,
+      "product_id": "P011",
+      "product_name": "Tapered Trousers",
+      "category": "Trousers"
+    },
+    {
+      "name": "P013",
+      "sold": 180,
+      "returned": 37,
+      "refundCents": 285190,
+      "fit": 24,
+      "sales_lines": 149,
+      "refunds": 2851.9,
+      "rate": 20.555555555555557,
+      "fitShare": 64.86486486486487,
+      "product_id": "P013",
+      "product_name": "Tailored Trousers",
+      "category": "Trousers"
+    }
+  ],
+  "selected": {
+    "filters": {
+      "start": "2025-10",
+      "end": "2026-09",
+      "category": "Trousers",
+      "product": "P012",
+      "size": "XS"
+    },
+    "totals": {
+      "sold": 44,
+      "returned": 14,
+      "refundCents": 93150,
+      "fit": 6,
+      "sales_lines": 37,
+      "refunds": 931.5,
+      "rate": 31.818181818181817,
+      "fitShare": 42.857142857142854
+    }
+  },
+  "checks": [
+    "source vs aggregate counts",
+    "product and cell additive reconciliation",
+    "same totals as overview",
+    "descending returned units",
+    "ratio of sums and zero denominator"
+  ]
+}
