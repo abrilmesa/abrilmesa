@@ -1,0 +1,663 @@
+{
+  "passed": true,
+  "testedSelections": 19,
+  "source": "Independent raw SQLite sales and returns joined only to unique dimensions; approved foundation read-only",
+  "filters": {
+    "start": "2025-10",
+    "end": "2026-09",
+    "category": "Trousers",
+    "product": "",
+    "size": ""
+  },
+  "example": {
+    "totals": {
+      "sold": 2435,
+      "returned": 688,
+      "refundCents": 4784440,
+      "fit": 338,
+      "sales_lines": 2080,
+      "refunds": 47844.4,
+      "rate": 28.254620123203285,
+      "fitShare": 49.127906976744185
+    },
+    "reasons": [
+      {
+        "code": "SMALL",
+        "name": "Too small",
+        "group": "Fit",
+        "returned": 190
+      },
+      {
+        "code": "LARGE",
+        "name": "Too large",
+        "group": "Fit",
+        "returned": 148
+      },
+      {
+        "code": "MIND",
+        "name": "Changed mind",
+        "group": "Preference",
+        "returned": 111
+      },
+      {
+        "code": "EXPECT",
+        "name": "Different from description",
+        "group": "Expectations",
+        "returned": 100
+      },
+      {
+        "code": "QUALITY",
+        "name": "Quality issue",
+        "group": "Quality",
+        "returned": 78
+      },
+      {
+        "code": "DAMAGED",
+        "name": "Arrived damaged",
+        "group": "Quality",
+        "returned": 31
+      },
+      {
+        "code": "UNK",
+        "name": "Not reported",
+        "group": "Unknown",
+        "returned": 30
+      }
+    ],
+    "monthly": [
+      {
+        "month": "2025-10",
+        "returned": 67,
+        "groups": [
+          {
+            "name": "Fit",
+            "returned": 31
+          },
+          {
+            "name": "Quality",
+            "returned": 16
+          },
+          {
+            "name": "Preference",
+            "returned": 8
+          },
+          {
+            "name": "Expectations",
+            "returned": 12
+          },
+          {
+            "name": "Unknown",
+            "returned": 0
+          }
+        ]
+      },
+      {
+        "month": "2025-11",
+        "returned": 91,
+        "groups": [
+          {
+            "name": "Fit",
+            "returned": 45
+          },
+          {
+            "name": "Quality",
+            "returned": 12
+          },
+          {
+            "name": "Preference",
+            "returned": 13
+          },
+          {
+            "name": "Expectations",
+            "returned": 16
+          },
+          {
+            "name": "Unknown",
+            "returned": 5
+          }
+        ]
+      },
+      {
+        "month": "2025-12",
+        "returned": 87,
+        "groups": [
+          {
+            "name": "Fit",
+            "returned": 42
+          },
+          {
+            "name": "Quality",
+            "returned": 16
+          },
+          {
+            "name": "Preference",
+            "returned": 12
+          },
+          {
+            "name": "Expectations",
+            "returned": 10
+          },
+          {
+            "name": "Unknown",
+            "returned": 7
+          }
+        ]
+      },
+      {
+        "month": "2026-01",
+        "returned": 45,
+        "groups": [
+          {
+            "name": "Fit",
+            "returned": 18
+          },
+          {
+            "name": "Quality",
+            "returned": 9
+          },
+          {
+            "name": "Preference",
+            "returned": 8
+          },
+          {
+            "name": "Expectations",
+            "returned": 9
+          },
+          {
+            "name": "Unknown",
+            "returned": 1
+          }
+        ]
+      },
+      {
+        "month": "2026-02",
+        "returned": 40,
+        "groups": [
+          {
+            "name": "Fit",
+            "returned": 16
+          },
+          {
+            "name": "Quality",
+            "returned": 4
+          },
+          {
+            "name": "Preference",
+            "returned": 10
+          },
+          {
+            "name": "Expectations",
+            "returned": 6
+          },
+          {
+            "name": "Unknown",
+            "returned": 4
+          }
+        ]
+      },
+      {
+        "month": "2026-03",
+        "returned": 45,
+        "groups": [
+          {
+            "name": "Fit",
+            "returned": 23
+          },
+          {
+            "name": "Quality",
+            "returned": 7
+          },
+          {
+            "name": "Preference",
+            "returned": 7
+          },
+          {
+            "name": "Expectations",
+            "returned": 8
+          },
+          {
+            "name": "Unknown",
+            "returned": 0
+          }
+        ]
+      },
+      {
+        "month": "2026-04",
+        "returned": 45,
+        "groups": [
+          {
+            "name": "Fit",
+            "returned": 26
+          },
+          {
+            "name": "Quality",
+            "returned": 5
+          },
+          {
+            "name": "Preference",
+            "returned": 6
+          },
+          {
+            "name": "Expectations",
+            "returned": 7
+          },
+          {
+            "name": "Unknown",
+            "returned": 1
+          }
+        ]
+      },
+      {
+        "month": "2026-05",
+        "returned": 66,
+        "groups": [
+          {
+            "name": "Fit",
+            "returned": 31
+          },
+          {
+            "name": "Quality",
+            "returned": 10
+          },
+          {
+            "name": "Preference",
+            "returned": 16
+          },
+          {
+            "name": "Expectations",
+            "returned": 7
+          },
+          {
+            "name": "Unknown",
+            "returned": 2
+          }
+        ]
+      },
+      {
+        "month": "2026-06",
+        "returned": 53,
+        "groups": [
+          {
+            "name": "Fit",
+            "returned": 35
+          },
+          {
+            "name": "Quality",
+            "returned": 7
+          },
+          {
+            "name": "Preference",
+            "returned": 5
+          },
+          {
+            "name": "Expectations",
+            "returned": 5
+          },
+          {
+            "name": "Unknown",
+            "returned": 1
+          }
+        ]
+      },
+      {
+        "month": "2026-07",
+        "returned": 62,
+        "groups": [
+          {
+            "name": "Fit",
+            "returned": 28
+          },
+          {
+            "name": "Quality",
+            "returned": 8
+          },
+          {
+            "name": "Preference",
+            "returned": 13
+          },
+          {
+            "name": "Expectations",
+            "returned": 10
+          },
+          {
+            "name": "Unknown",
+            "returned": 3
+          }
+        ]
+      },
+      {
+        "month": "2026-08",
+        "returned": 41,
+        "groups": [
+          {
+            "name": "Fit",
+            "returned": 21
+          },
+          {
+            "name": "Quality",
+            "returned": 6
+          },
+          {
+            "name": "Preference",
+            "returned": 6
+          },
+          {
+            "name": "Expectations",
+            "returned": 6
+          },
+          {
+            "name": "Unknown",
+            "returned": 2
+          }
+        ]
+      },
+      {
+        "month": "2026-09",
+        "returned": 46,
+        "groups": [
+          {
+            "name": "Fit",
+            "returned": 22
+          },
+          {
+            "name": "Quality",
+            "returned": 9
+          },
+          {
+            "name": "Preference",
+            "returned": 7
+          },
+          {
+            "name": "Expectations",
+            "returned": 4
+          },
+          {
+            "name": "Unknown",
+            "returned": 4
+          }
+        ]
+      }
+    ],
+    "comparison": {
+      "first": {
+        "months": [
+          "2025-10",
+          "2025-11",
+          "2025-12",
+          "2026-01",
+          "2026-02",
+          "2026-03"
+        ],
+        "sold": 1329,
+        "returned": 375,
+        "refundCents": 2552140,
+        "fit": 175,
+        "sales_lines": 1133,
+        "refunds": 25521.4,
+        "rate": 28.216704288939052,
+        "fitShare": 46.666666666666664,
+        "fitPerSold": 13.167795334838225,
+        "otherPerSold": 15.048908954100828,
+        "products": [
+          {
+            "name": "P009",
+            "sold": 244,
+            "returned": 56,
+            "refundCents": 415540,
+            "fit": 26,
+            "sales_lines": 211,
+            "refunds": 4155.4,
+            "rate": 22.950819672131146,
+            "fitShare": 46.42857142857143,
+            "product_id": "P009",
+            "product_name": "Straight Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P012",
+            "sold": 208,
+            "returned": 66,
+            "refundCents": 437460,
+            "fit": 30,
+            "sales_lines": 184,
+            "refunds": 4374.6,
+            "rate": 31.73076923076923,
+            "fitShare": 45.45454545454545,
+            "product_id": "P012",
+            "product_name": "Cropped Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P010",
+            "sold": 189,
+            "returned": 68,
+            "refundCents": 318010,
+            "fit": 29,
+            "sales_lines": 158,
+            "refunds": 3180.1,
+            "rate": 35.97883597883598,
+            "fitShare": 42.64705882352941,
+            "product_id": "P010",
+            "product_name": "Wide Leg Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P015",
+            "sold": 184,
+            "returned": 45,
+            "refundCents": 339700,
+            "fit": 23,
+            "sales_lines": 156,
+            "refunds": 3397,
+            "rate": 24.456521739130434,
+            "fitShare": 51.111111111111114,
+            "product_id": "P015",
+            "product_name": "Cargo Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P016",
+            "sold": 173,
+            "returned": 48,
+            "refundCents": 361030,
+            "fit": 28,
+            "sales_lines": 145,
+            "refunds": 3610.3,
+            "rate": 27.745664739884393,
+            "fitShare": 58.333333333333336,
+            "product_id": "P016",
+            "product_name": "Linen Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P014",
+            "sold": 144,
+            "returned": 45,
+            "refundCents": 291180,
+            "fit": 17,
+            "sales_lines": 122,
+            "refunds": 2911.8,
+            "rate": 31.25,
+            "fitShare": 37.77777777777778,
+            "product_id": "P014",
+            "product_name": "Relaxed Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P013",
+            "sold": 95,
+            "returned": 19,
+            "refundCents": 145360,
+            "fit": 12,
+            "sales_lines": 80,
+            "refunds": 1453.6,
+            "rate": 20,
+            "fitShare": 63.1578947368421,
+            "product_id": "P013",
+            "product_name": "Tailored Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P011",
+            "sold": 92,
+            "returned": 28,
+            "refundCents": 243860,
+            "fit": 10,
+            "sales_lines": 77,
+            "refunds": 2438.6,
+            "rate": 30.434782608695652,
+            "fitShare": 35.714285714285715,
+            "product_id": "P011",
+            "product_name": "Tapered Trousers",
+            "category": "Trousers"
+          }
+        ]
+      },
+      "last": {
+        "months": [
+          "2026-04",
+          "2026-05",
+          "2026-06",
+          "2026-07",
+          "2026-08",
+          "2026-09"
+        ],
+        "sold": 1106,
+        "returned": 313,
+        "refundCents": 2232300,
+        "fit": 163,
+        "sales_lines": 947,
+        "refunds": 22323,
+        "rate": 28.300180831826403,
+        "fitShare": 52.07667731629393,
+        "fitPerSold": 14.737793851717903,
+        "otherPerSold": 13.5623869801085,
+        "products": [
+          {
+            "name": "P009",
+            "sold": 223,
+            "returned": 61,
+            "refundCents": 472420,
+            "fit": 28,
+            "sales_lines": 192,
+            "refunds": 4724.2,
+            "rate": 27.3542600896861,
+            "fitShare": 45.90163934426229,
+            "product_id": "P009",
+            "product_name": "Straight Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P012",
+            "sold": 177,
+            "returned": 61,
+            "refundCents": 411240,
+            "fit": 28,
+            "sales_lines": 149,
+            "refunds": 4112.4,
+            "rate": 34.463276836158194,
+            "fitShare": 45.90163934426229,
+            "product_id": "P012",
+            "product_name": "Cropped Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P015",
+            "sold": 168,
+            "returned": 37,
+            "refundCents": 283610,
+            "fit": 23,
+            "sales_lines": 149,
+            "refunds": 2836.1,
+            "rate": 22.023809523809526,
+            "fitShare": 62.16216216216216,
+            "product_id": "P015",
+            "product_name": "Cargo Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P010",
+            "sold": 134,
+            "returned": 37,
+            "refundCents": 176400,
+            "fit": 22,
+            "sales_lines": 112,
+            "refunds": 1764,
+            "rate": 27.611940298507463,
+            "fitShare": 59.45945945945946,
+            "product_id": "P010",
+            "product_name": "Wide Leg Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P016",
+            "sold": 123,
+            "returned": 43,
+            "refundCents": 331010,
+            "fit": 21,
+            "sales_lines": 108,
+            "refunds": 3310.1,
+            "rate": 34.959349593495936,
+            "fitShare": 48.83720930232558,
+            "product_id": "P016",
+            "product_name": "Linen Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P014",
+            "sold": 110,
+            "returned": 37,
+            "refundCents": 250470,
+            "fit": 18,
+            "sales_lines": 92,
+            "refunds": 2504.7,
+            "rate": 33.63636363636363,
+            "fitShare": 48.648648648648646,
+            "product_id": "P014",
+            "product_name": "Relaxed Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P011",
+            "sold": 86,
+            "returned": 19,
+            "refundCents": 167320,
+            "fit": 11,
+            "sales_lines": 76,
+            "refunds": 1673.2,
+            "rate": 22.093023255813954,
+            "fitShare": 57.89473684210526,
+            "product_id": "P011",
+            "product_name": "Tapered Trousers",
+            "category": "Trousers"
+          },
+          {
+            "name": "P013",
+            "sold": 85,
+            "returned": 18,
+            "refundCents": 139830,
+            "fit": 12,
+            "sales_lines": 69,
+            "refunds": 1398.3,
+            "rate": 21.176470588235293,
+            "fitShare": 66.66666666666667,
+            "product_id": "P013",
+            "product_name": "Tailored Trousers",
+            "category": "Trousers"
+          }
+        ]
+      },
+      "omitted": []
+    }
+  },
+  "checks": [
+    "all reason and monthly counts match raw return rows",
+    "unknown retained",
+    "headline totals unchanged",
+    "equal-length nonoverlapping comparison cohorts",
+    "reason incidence adds to overall return rate",
+    "single-month comparison unavailable",
+    "odd month excluded only from pair",
+    "zero return and zero sale fixtures"
+  ]
+}

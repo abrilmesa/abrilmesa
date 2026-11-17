@@ -45,3 +45,16 @@ export function productDiagnostics(data,f){
  const cells=products.flatMap(p=>sizes.map(size=>({product_id:p.product_id,product_name:p.product_name,size,...summarize(rows.filter(r=>r.product_id===p.product_id&&r.size===size))})));
  return {totals,products,cells,sizes};
 }
+
+export const REASON_GROUPS=['Fit','Quality','Preference','Expectations','Unknown'];
+export function reasonDiagnostics(data,f){
+ const cohort=data.cohorts.filter(r=>matches(r,f)),rows=data.reasons.filter(r=>matches(r,f));
+ const totals=summarize(cohort);
+ const codes=[...new Set(rows.map(r=>r.reason_code))];
+ const reasons=codes.map(code=>{const items=rows.filter(r=>r.reason_code===code);return {code,name:items[0].reason_label,group:items[0].reason_group,returned:items.reduce((n,r)=>n+Number(r.returned),0)};}).sort((a,b)=>b.returned-a.returned||a.code.localeCompare(b.code));
+ const monthly=MONTHS.filter(m=>m>=f.start&&m<=f.end).map(month=>{const selected=rows.filter(r=>r.month===month),base=selected.reduce((n,r)=>n+Number(r.returned),0);return {month,returned:base,groups:REASON_GROUPS.map(name=>({name,returned:selected.filter(r=>r.reason_group===name).reduce((n,r)=>n+Number(r.returned),0)}))};});
+ const months=monthly.map(r=>r.month),n=Math.floor(months.length/2);
+ const period=ms=>{const selected=cohort.filter(r=>ms.includes(r.month)),t=summarize(selected);return {months:ms,...t,fitPerSold:t.sold?100*t.fit/t.sold:null,otherPerSold:t.sold?100*(t.returned-t.fit)/t.sold:null,products:group(selected,'product_id').sort((a,b)=>b.sold-a.sold)};};
+ const comparison=n?{first:period(months.slice(0,n)),last:period(months.slice(-n)),omitted:months.length%2?[months[n]]:[]}:null;
+ return {totals,reasons,monthly,comparison};
+}
