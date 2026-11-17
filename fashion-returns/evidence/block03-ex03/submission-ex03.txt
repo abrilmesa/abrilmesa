@@ -1,0 +1,11 @@
+I implemented diagnostic view B, Return reasons & cohort mix, using the approved synthetic dataset stored in Supabase. It inherits the overview’s original sale period, category, product and size filters and preserves the KPI contract.
+
+Reason bars show returned-unit counts and shares, including Not reported. Monthly 100% stacked columns show reason composition by original sale month, with returned-unit population sizes and an accessible counts/percentages table. These percentages describe the mix of returned units, not the probability of a return.
+
+Hypothesis: A shift toward Fit-related returns may explain the later cohort’s change in overall return rate. I compared Trousers in October 2025–March 2026 with April–September 2026, using six complete sale months in each cohort and the same eligibility rules.
+
+Observed: the early cohort has 375 returns / 1,329 sold = 28.22%; the late cohort has 313 / 1,106 = 28.30%, a change of only +0.08 percentage points. Fit share rises from 175/375 = 46.67% to 163/313 = 52.08% (+5.41 pp). However, Fit returns per sold unit rise by +1.57 pp while other and unreported returns per sold unit fall by 1.49 pp. The offset challenges a Fit-only explanation: a larger Fit share does not imply a similarly large rise in overall return risk.
+
+I also checked a visible confounder: product sales mix. Wide Leg Trousers changes from 189/1,329 = 14.22% to 134/1,106 = 12.12% of sold units. The app exposes the product mix table and permits narrower product/size filters. Reported reasons are not verified fit measurements; buyer differences and intervention effects are unavailable. Next evidence would include underlying return records, measurements, buyer feedback and a controlled evaluation of a size-guide change. No causal conclusion is claimed.
+
+Independent checks against preserved raw source tables passed for 19 filter selections. I also tested local reason/month selection without changing headline KPIs, keyboard activation, one-month comparison unavailability and an empty cohort. Individual record access remains for the later detail layer.

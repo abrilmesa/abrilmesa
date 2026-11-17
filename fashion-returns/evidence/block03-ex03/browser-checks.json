@@ -1,0 +1,14 @@
+{
+  "liveUrl": "https://hello-world-puce-two-10.vercel.app/fashion-returns/index.html#view=reasons&start=2025-10&end=2026-09&category=Trousers",
+  "liveSupabaseConnected": true,
+  "headlineValues": ["28.25%", "688", "$47,844.40", "49.13%"],
+  "localSelectionsChecked": [
+    {"selection": "Not reported", "returned": 30, "headlineUnchanged": true, "environment": "local app with live Supabase"},
+    {"selection": "October 2025 / Fit", "returned": 31, "allMonthReturns": 67, "headlineUnchanged": true, "keyboardEnter": true, "environment": "local app and published Vercel"}
+  ],
+  "productMixExpanded": {"Wide Leg Trousers": {"early": "189/1329 = 14.22%", "late": "134/1106 = 12.12%"}},
+  "singleMonth": "Shows comparison unavailable; reason chart still works",
+  "emptySelection": "October2025 / Dresses / MidiDress / XS: sold0, returns0, ratesN/A, no composition",
+  "causalClaim": false,
+  "individualRecordAccess": "Not implemented; local selection prepares later detail context"
+}
