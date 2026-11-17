@@ -1,0 +1,421 @@
+{
+  "passed": true,
+  "checkedSteps": 18,
+  "source": "Independent raw SQLite sales and returns queries with dimension keys; no raw-return join in sold-unit sum",
+  "checks": [
+    {
+      "step": "start overview",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "view A entered by keyboard",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "view A narrowed to Cropped XS",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "P012",
+        "size": "XS",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        37.5,
+        9,
+        600.3,
+        44.44444444444444
+      ],
+      "screenObserved": [
+        "37.50%",
+        "9",
+        "$600.30",
+        "44.44%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "browser Back restores overview",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "browser Forward restores selected A",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "P012",
+        "size": "XS",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        37.5,
+        9,
+        600.3,
+        44.44444444444444
+      ],
+      "screenObserved": [
+        "37.50%",
+        "9",
+        "$600.30",
+        "44.44%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "breadcrumb restores overview",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "view B entered by keyboard",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "view B local month/group selection",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "refresh preserves local evidence and global cohort",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "B to A retains global filters",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "A to B retains local evidence",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "global change clears local evidence",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-05"
+      },
+      "sourceExpected": [
+        28.663101604278076,
+        268,
+        19181.1,
+        51.11940298507463
+      ],
+      "screenObserved": [
+        "28.66%",
+        "268",
+        "$19,181.10",
+        "51.12%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "sidebar Overview restores original metric after global change",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "empty diagnostic B after changing shared filters",
+      "filters": {
+        "category": "Dresses",
+        "end": "2025-10",
+        "product": "P002",
+        "size": "XS",
+        "start": "2025-10"
+      },
+      "sourceExpected": [
+        null,
+        0,
+        0.0,
+        null
+      ],
+      "screenObserved": [
+        "N/A",
+        "0",
+        "$0.00",
+        "N/A"
+      ],
+      "passed": true
+    },
+    {
+      "step": "empty diagnostic A keeps N/A",
+      "filters": {
+        "category": "Dresses",
+        "end": "2025-10",
+        "product": "P002",
+        "size": "XS",
+        "start": "2025-10"
+      },
+      "sourceExpected": [
+        null,
+        0,
+        0.0,
+        null
+      ],
+      "screenObserved": [
+        "N/A",
+        "0",
+        "$0.00",
+        "N/A"
+      ],
+      "passed": true
+    },
+    {
+      "step": "return from empty diagnostics restores starting overview",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "Reset all filters resets current journey",
+      "filters": {
+        "category": "",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2025-10"
+      },
+      "sourceExpected": [
+        22.874466032795922,
+        1660,
+        110852.4,
+        50.8433734939759
+      ],
+      "screenObserved": [
+        "22.87%",
+        "1,660",
+        "$110,852.40",
+        "50.84%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "reset is not undone by overview breadcrumb",
+      "filters": {
+        "category": "",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2025-10"
+      },
+      "sourceExpected": [
+        22.874466032795922,
+        1660,
+        110852.4,
+        50.8433734939759
+      ],
+      "screenObserved": [
+        "22.87%",
+        "1,660",
+        "$110,852.40",
+        "50.84%"
+      ],
+      "passed": true
+    }
+  ]
+}
