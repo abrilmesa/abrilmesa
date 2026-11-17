@@ -1,0 +1,7 @@
+{
+  "browserBackFocus": {"beforeFix": "BODY", "afterFix": "H1#page-title", "verifiedLocalAndPublished": true},
+  "nonDefaultComparisonRestored": {"mode": "size-peers", "filters": "Apr-Sep2026 / Trousers / Cropped / XS", "rate": "37.50%", "navigation": "overview -> A -> sidebar Overview"},
+  "narrowViewAKeyboardScroll": {"width":390,"documentWidth":390,"viewportRegion":320,"contentWidth":660,"scrollLeftAfterArrowRight":40,"focusRetained":true},
+  "sourceAndKpiContractChanged": false,
+  "individualRecordAccess": "Not yet implemented"
+}

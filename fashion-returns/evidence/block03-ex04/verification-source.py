@@ -1,6 +1,6 @@
 import sqlite3,json
 from pathlib import Path
-p=Path('outputs/fashion-returns-block03-ex04');rows=json.loads((p/'journey-observed-local.json').read_text())
+p=Path('outputs/fashion-returns-block03-ex04');rows=json.loads((p/'journey-observed-local.json').read_text())+json.loads((p/'journey-observed-live.json').read_text())
 c=sqlite3.connect('file:outputs/fashion-returns-foundation-v1.1/fashion_returns.sqlite?mode=ro',uri=True)
 result=[]
 for r in rows:

@@ -1,0 +1,20 @@
+[
+  {
+    "contentWidth": 660,
+    "documentWidth": 390,
+    "regionWidth": 320,
+    "view": "A",
+    "width": 390
+  },
+  {
+    "contentWidth": 700,
+    "documentWidth": 390,
+    "regionWidth": 320,
+    "view": "B",
+    "width": 390,
+    "keyboardScroll": {
+      "focused": true,
+      "scrollLeft": 40
+    }
+  }
+]

@@ -1,0 +1,13 @@
+I connected the overview, Products & sizes and Return reasons into one analytical journey, preserving the original sale period, category, product, size and KPI definitions.
+
+Clearly labeled overview actions and cross-view buttons connect both investigations. Breadcrumbs, sidebar Overview and the brand link restore the saved starting overview filters and comparison mode. Browser Back/Forward now restore view context; refresh retains the journey state. A visible scope panel explains the behavior.
+
+View B has a separately labeled local reason/month evidence filter. It intersects the global cohort only for supporting evidence and never changes headline KPIs. Changing a global filter clears the local selection. Reset all filters clears global/local selections and the saved starting context, so returning does not undo an explicit reset.
+
+Test route: April–September 2026 / Trousers / all products and sizes. The overview displays 313 returned / 1,106 sold = 28.30%. View A inherits those values. Selecting Cropped Trousers / XS gives 9/24 = 37.50%. Returning restores 313/1,106 = 28.30%. Opening View B preserves the same cohort; selecting April/Fit locally identifies 26 returned units without changing the headline 313 returns or 28.30% rate. Expected and observed values match.
+
+I tested an empty cohort: October 2025 / Dresses / Midi Dress / XS. Both diagnostic views show zero counts and N/A rates. Returning restores the starting overview metric. Twenty-two observed journey states (18 local and four published-screen states) were checked independently against preserved raw source data.
+
+I inspected both views at an actual 390-pixel viewport: the document remains 390 pixels wide, controls fit, and wide charts/tables stay inside labeled horizontal-scroll regions. Keyboard tests covered Enter on links/cells/segments and ArrowRight in the heatmap. A Browser Back test exposed lost focus after removing a selected reason panel; I fixed it and verified that focus returns to the destination heading.
+
+The app still uses the approved synthetic Supabase data. No database or KPI definitions changed, and individual record detail remains the next layer.

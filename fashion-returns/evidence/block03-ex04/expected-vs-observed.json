@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "checkedSteps": 18,
+  "checkedSteps": 22,
   "source": "Independent raw SQLite sales and returns queries with dimension keys; no raw-return join in sold-unit sum",
   "checks": [
     {
@@ -414,6 +414,98 @@
         "1,660",
         "$110,852.40",
         "50.84%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "01 starting overview",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "02 selected diagnostic A",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "P012",
+        "size": "XS",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        37.5,
+        9,
+        600.3,
+        44.44444444444444
+      ],
+      "screenObserved": [
+        "37.50%",
+        "9",
+        "$600.30",
+        "44.44%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "03 overview restored",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
+      ],
+      "passed": true
+    },
+    {
+      "step": "04 diagnostic B local evidence, same headline",
+      "filters": {
+        "category": "Trousers",
+        "end": "2026-09",
+        "product": "",
+        "size": "",
+        "start": "2026-04"
+      },
+      "sourceExpected": [
+        28.300180831826403,
+        313,
+        22323.0,
+        52.07667731629393
+      ],
+      "screenObserved": [
+        "28.30%",
+        "313",
+        "$22,323.00",
+        "52.08%"
       ],
       "passed": true
     }

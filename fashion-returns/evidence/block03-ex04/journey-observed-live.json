@@ -1,0 +1,86 @@
+[
+  {
+    "label": "01 starting overview",
+    "context": "Sales: April 2026 – September 2026 · Trousers · All products · All sizes · 947 sales lines · 1,106 sold units",
+    "filters": {
+      "category": "Trousers",
+      "end": "2026-09",
+      "product": "",
+      "size": "",
+      "start": "2026-04"
+    },
+    "focus": "",
+    "hash": "#view=overview&comparison=prior-month&start=2026-04&end=2026-09&category=Trousers",
+    "heading": "Returns overview.",
+    "kpis": [
+      "28.30%",
+      "313",
+      "$22,323.00",
+      "52.08%"
+    ],
+    "local": null
+  },
+  {
+    "label": "02 selected diagnostic A",
+    "context": "Sales: April 2026 – September 2026 · Trousers · Cropped Trousers · Size XS · 21 sales lines · 24 sold units",
+    "filters": {
+      "category": "Trousers",
+      "end": "2026-09",
+      "product": "P012",
+      "size": "XS",
+      "start": "2026-04"
+    },
+    "focus": "page-title",
+    "hash": "#view=products&comparison=prior-month&start=2026-04&end=2026-09&category=Trousers&product=P012&size=XS",
+    "heading": "Products & sizes.",
+    "kpis": [
+      "37.50%",
+      "9",
+      "$600.30",
+      "44.44%"
+    ],
+    "local": null
+  },
+  {
+    "label": "03 overview restored",
+    "context": "Sales: April 2026 – September 2026 · Trousers · All products · All sizes · 947 sales lines · 1,106 sold units",
+    "filters": {
+      "category": "Trousers",
+      "end": "2026-09",
+      "product": "",
+      "size": "",
+      "start": "2026-04"
+    },
+    "focus": "page-title",
+    "hash": "#view=overview&comparison=prior-month&start=2026-04&end=2026-09&category=Trousers",
+    "heading": "Returns overview.",
+    "kpis": [
+      "28.30%",
+      "313",
+      "$22,323.00",
+      "52.08%"
+    ],
+    "local": null
+  },
+  {
+    "label": "04 diagnostic B local evidence, same headline",
+    "context": "Sales: April 2026 – September 2026 · Trousers · All products · All sizes · 947 sales lines · 1,106 sold units",
+    "filters": {
+      "category": "Trousers",
+      "end": "2026-09",
+      "product": "",
+      "size": "",
+      "start": "2026-04"
+    },
+    "focus": "reason-evidence",
+    "hash": "#view=reasons&comparison=prior-month&start=2026-04&end=2026-09&category=Trousers&evidenceGroup=Fit&evidenceMonth=2026-04",
+    "heading": "Return reasons & cohort mix.",
+    "kpis": [
+      "28.30%",
+      "313",
+      "$22,323.00",
+      "52.08%"
+    ],
+    "local": "Local evidence filter: April 2026 · Fit · 26 returned units Clear local filter Headline cohort stays 313 returned / 1,106 sold."
+  }
+]

@@ -29,11 +29,11 @@ Browser Back from selectedA restored starting overview; Forward restored selecte
 
 Empty test: October2025 / Dresses / MidiDress / XS has0sold,0returns,N/Arates in bothAandB. Returning restores313/1106, not zero or an altered starting period. Reset test restores all categories,Oct2025–Sep2026,1660/7257=22.87%; returning does not undo reset.
 
-18 observed local-app journey states were independently checked against preserved raw SQLite sales and returns under identical filters. Sold units are summed separately from raw returns to avoid multiplying sales. Each displayed KPI matches source at displayed precision. The local app used live Supabase aggregates; this was not a fresh source-table SQL execution in Supabase. See expected-vs-observed.json and journey-observed-local.json.
+18 local-app and4 published-screen journey states (22 total) were independently checked against preserved raw SQLite sales and returns under identical filters. Sold units are summed separately from raw returns to avoid multiplying sales. Each displayed KPI matches source at displayed precision. The local app used live Supabase aggregates; this was not a fresh source-table SQL execution in Supabase. See expected-vs-observed.json and journey-observed-local.json.
 
 ## Narrow-screen checks
 
-Actual viewport390px, document width390px for both views: no page-level horizontal overflow. Navigation buttons fit. Heatmap visible320px/content660px; keyboard ArrowRight moved its scrollLeft40px with focus retained. ViewB chart visible320px/content700px in its bounded scroll region. Both views use readable labels, counts and explicit local/global scope; complex charts/tables deliberately scroll rather than shrink labels to illegibility. Screenshots05/06 show both complete narrow screens. No formal screen-reader audit claimed.
+Actual viewport390px, document width390px for both views: no page-level horizontal overflow. Navigation buttons fit. Heatmap visible320px/content660px; keyboard ArrowRight moved its scrollLeft40px with focus retained. ViewB chart visible320px/content700px in its bounded scroll region. Both views use readable labels, counts and explicit local/global scope; complex charts/tables deliberately scroll rather than shrink labels to illegibility. On the published ViewB, keyboard ArrowRight also moved the chart scrollLeft40px with focus retained. Screenshots05/06 show both complete narrow screens from Vercel. No formal screen-reader audit claimed.
 
 ## Evidence
 
