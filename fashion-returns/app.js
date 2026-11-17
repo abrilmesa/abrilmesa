@@ -48,7 +48,7 @@ function kpis(t){return `<section class="kpis" aria-label="Key performance indic
   ['returned','Returned units',num(t.returned),'Within the selected sales cohort','products'],
   ['refunds','Refunded amount',usd(t.refunds),'USD · Product refunds, not profit loss','products'],
   ['fit','Fit-related share',pct(t.fitShare),`${num(t.fit)} / ${num(t.returned)} returned units`,'reasons']
-].map(([key,title,value,note,target],i)=>`<article class="card kpi ${i===0?'primary':''}"><div class="kpi-label">${title}<button class="help" data-help="${key}" aria-label="Definition: ${title}">?</button></div><div class="kpi-value ${key==='refunds'?'money':''}" data-kpi="${key}">${value}</div><p class="kpi-note">${note}</p><button class="kpi-link" data-view="${target}">${target==='products'?'View product performance':'Explore return reasons'} ↗</button></article>`).join('')}</section>`;}
+].map(([key,title,value,note,target],i)=>`<article class="card kpi ${i===0?'primary':''}"><div class="kpi-label">${title}<button class="help" data-help="${key}" aria-label="Definition: ${title}">?</button></div><div class="kpi-value ${key==='refunds'?'money':''}" data-kpi="${key}">${view==='overview'?`<button class="kpi-finding" data-finding="${key}" aria-haspopup="dialog" aria-label="Actions for ${title}: ${value}">${value}</button>`:value}</div><p class="kpi-note">${note}</p><button class="kpi-link" data-view="${target}">${target==='products'?'View product performance':'Explore return reasons'} ↗</button></article>`).join('')}</section>`;}
 function priorMonthComparison(a){
   const c=a.current,p=a.previous;
   if(!p||c.rate===null||p.rate===null)return `<strong>${monthName(c.month)}: ${pct(c.rate)}</strong><small>Prior-month comparison unavailable: ${!p?'the previous month is outside source coverage.':'one cohort has no sold units.'} No target has been invented.</small>`;
@@ -168,3 +168,32 @@ document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.tar
 document.addEventListener('focusin',e=>{const p=e.target.closest('[data-month]');if(p&&data){const m=analyze(data,filters).monthly.find(r=>r.month===p.dataset.month);if(m&&$('point-detail'))$('point-detail').textContent=`${monthName(m.month)}: ${pct(m.rate)} · ${num(m.returned)} returned / ${num(m.sold)} sold. Press Enter to explore.`;}});
 window.addEventListener('hashchange',()=>{if(location.hash==='#main')return;if(data){restoreUrl();setupOptions();render();focusHeading();}});
 load();
+
+// Week3 Email checkpoint1: scope-aware entry and read-only connection inspection.
+let findingSnapshot=null;
+const emailEndpoint='/api/fashion-email';
+function showFinding(key){
+ const t=analyze(data,filters).totals;const values={rate:pct(t.rate),returned:num(t.returned),refunds:usd(t.refunds),fit:pct(t.fitShare)};
+ findingSnapshot={metric:definitions[key][0],value:values[key],filters:{...filters},context:$('context').textContent,totals:t};
+ $('finding-title').textContent=findingSnapshot.metric; $('finding-scope').textContent=`${findingSnapshot.value} · ${findingSnapshot.context}`;$('finding-menu').showModal();
+}
+function showConnectionStatus(result){
+ $('email-status').textContent=result.message;$('email-checked').textContent=result.checkedAt?`Read-only check: ${result.checkedAt}`:'Provider authentication has not been verified.';
+ $('lab-phrase-wrap').hidden=!result.configured&&result.state!=='connection_verified';
+ if(result.state==='connection_verified'){$('lab-phrase-wrap').hidden=false;$('email-recipient').textContent=`Permitted test recipient: ${result.permittedRecipient}`;}
+}
+async function readEmailSettings(){
+ $('email-status').textContent='Reading server configuration…';$('email-recipient').textContent='The permitted test recipient is configured privately as LAB_EMAIL_TO.';
+ try{const response=await fetch(emailEndpoint,{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!response.ok)throw Error();const result=await response.json();showConnectionStatus(result);}
+ catch{$('email-status').textContent='The connection endpoint is unavailable. Check the deployed Vercel project. No email has been sent.';}
+}
+async function inspectEmail(){
+ $('email-check').disabled=true;
+ try{const response=await fetch(emailEndpoint,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${$('lab-phrase').value}`},body:JSON.stringify({operation:'inspect'}),signal:AbortSignal.timeout(15000)});const result=await response.json();showConnectionStatus(result);}
+ catch{$('email-status').textContent='The read-only connection check could not be completed. No email has been sent.';}
+ finally{$('email-check').disabled=false;$('lab-phrase').value='';}
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-finding]');if(b&&data&&view==='overview')showFinding(b.dataset.finding);});
+$('share-finding').onclick=()=>{$('finding-menu').close();$('email-context').textContent=`${findingSnapshot.metric}: ${findingSnapshot.value}. ${findingSnapshot.context}. Synthetic data · foundation v1.1.`;$('email-connection').showModal();readEmailSettings();};
+$('email-check').onclick=inspectEmail;$('email-refresh-status').onclick=readEmailSettings;
+$('email-connection').addEventListener('close',()=>{$('lab-phrase').value='';});
