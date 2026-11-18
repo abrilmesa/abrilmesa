@@ -99,7 +99,7 @@ function products(a){
  <p class="chart-summary">Counts remain visible for small groups; no group is excluded by sample size. Zero sales = N/A; sales with no returns = 0%. Unreported return reasons remain in all returned-unit totals. Select a cell to prepare its evidence context.</p>
  <div class="table-scroll heatmap-scroll" tabindex="0" role="region" aria-label="Product by size rates; scroll horizontally if needed"><table class="heatmap"><caption>Product × size · original sales cohort · keyboard-operable cells</caption><thead><tr><th scope="col">PRODUCT</th>${d.sizes.map(z=>`<th scope="col">${z}</th>`).join('')}</tr></thead><tbody>${d.products.map(p=>`<tr><th scope="row">${esc(p.product_name)}</th>${d.sizes.map(z=>{const c=d.cells.find(c=>c.product_id===p.product_id&&c.size===z);return `<td><button data-product-select="${esc(p.product_id)}" data-size-select="${z}" style="background:hsl(276 24% ${c.rate===null?97:97-c.rate*.42}%)" aria-label="Select ${esc(p.product_name)} size ${z}: ${pct(c.rate)}, ${c.returned} returned of ${c.sold} sold"><strong>${pct(c.rate)}</strong><small>${c.returned} / ${c.sold}</small></button></td>`;}).join('')}</tr>`).join('')}</tbody></table></div></section>
  <section class="card diagnostic-section"><h2>Reconciliation to the selected overview cohort</h2><p class="chart-sub">Product and size groups are disjoint. Recompute percentages from their totals.</p><dl class="reconcile"><div><dt>Sold units</dt><dd>${num(d.products.reduce((n,p)=>n+p.sold,0))} / ${num(t.sold)} overview</dd></div><div><dt>Returned units</dt><dd>${num(d.products.reduce((n,p)=>n+p.returned,0))} / ${num(t.returned)} overview</dd></div><div><dt>Recomputed rate</dt><dd>${pct(t.rate)} = ${num(t.returned)} / ${num(t.sold)}</dd></div></dl></section>`}
- <section class="card diagnostic-section evidence-selection" aria-label="Selection for future record detail"><h2>${selected?'Evidence selection prepared':'Choose a product or size to investigate'}</h2><p>${selected?`${esc(selected.product_name)} · ${filters.size?'Size '+esc(filters.size):'All sizes'} · ${monthName(filters.start)}–${monthName(filters.end)} · ${num(t.sales_lines)} sales lines, ${num(t.sold)} sold units and ${num(t.returned)} returned units.`:'Use a product bar or heatmap cell. The shared filter summary and URL will retain the selected product and size.'}</p><p>Record-detail handoff: eligible original sales lines, including lines without returns, then sale_line_id → linked returns. This version prepares the selection; individual record access is not implemented yet.</p>${selected?'<button class="button" data-download-selection>Download selection context</button>':''} <button class="button secondary" data-view="reasons">Explore reported reasons →</button></section>`;
+ <section class="card diagnostic-section evidence-selection" aria-label="Selection for future record detail"><h2>${selected?'Evidence selection prepared':'Choose a product or size to investigate'}</h2><p>${selected?`${esc(selected.product_name)} · ${filters.size?'Size '+esc(filters.size):'All sizes'} · ${monthName(filters.start)}–${monthName(filters.end)} · ${num(t.sales_lines)} sales lines, ${num(t.sold)} sold units and ${num(t.returned)} returned units.`:'Use a product bar or heatmap cell. The shared filter summary and URL will retain the selected product and size.'}</p><p>Record-detail handoff: eligible original sales lines, including lines without returns, then sale_line_id → linked returns. Choose one product and one size, then open record detail to read and correct individual sale lines through the protected server path.</p>${selected?'<button class="button" data-download-selection>Download selection context</button>':''}${selected&&filters.size?' <button class="button" data-open-records>Open record detail →</button>':''} <button class="button secondary" data-view="reasons">Explore reported reasons →</button></section>`;
 }
 const reasonColors={Fit:'#665078',Quality:'#a9775b',Preference:'#466e73',Expectations:'#596a39',Unknown:'#77717b'};
 const signed=value=>`${value>0?'+':''}${value.toFixed(2)} pp`;
@@ -197,3 +197,85 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-finding]')
 $('share-finding').onclick=()=>{$('finding-menu').close();$('email-context').textContent=`${findingSnapshot.metric}: ${findingSnapshot.value}. ${findingSnapshot.context}. Synthetic data · foundation v1.1.`;$('email-connection').showModal();readEmailSettings();};
 $('email-check').onclick=inspectEmail;$('email-refresh-status').onclick=readEmailSettings;
 $('email-connection').addEventListener('close',()=>{$('lab-phrase').value='';});
+
+// Week3 Exercise 2: protected record read and justified units_sold writeback (server path /api/fashion-record).
+const recordEndpoint='/api/fashion-record';
+let recordState={scope:null,lines:[],record:null,review:null};
+const recordAuth=()=>({Authorization:`Bearer ${$('record-phrase').value}`});
+function recordStatus(message){$('record-status').textContent=message;}
+async function recordFetch(url,options={}){
+ const response=await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(15000),...options,headers:{...(options.headers||{}),...recordAuth()}});
+ let body={};try{body=await response.json();}catch{}
+ return {ok:response.ok,status:response.status,body};
+}
+function openRecords(){
+ if(!data||!filters.product||!filters.size)return;
+ const p=data.cohorts.find(r=>r.product_id===filters.product);
+ recordState={scope:{...filters,productName:p?.product_name||filters.product},lines:[],record:null,review:null};
+ $('record-scope').textContent=`${recordState.scope.productName} · Size ${filters.size} · ${monthName(filters.start)}–${monthName(filters.end)} · eligible original sale lines (synthetic).`;
+ $('record-lines').innerHTML='';$('record-detail').innerHTML='';recordStatus('Checking server settings…');
+ $('record-dialog').showModal();
+ fetch(recordEndpoint,{cache:'no-store'}).then(r=>r.json()).then(s=>recordStatus(s.message)).catch(()=>recordStatus('The record endpoint is unavailable. Check the deployed Vercel project.'));
+}
+async function loadLines(){
+ const s=recordState.scope;if(!s)return;$('record-load-lines').disabled=true;recordStatus('Reading sale lines…');
+ try{const q=new URLSearchParams({product:s.product,size:s.size,start:s.start,end:s.end});const r=await recordFetch(`${recordEndpoint}?${q}`);
+  if(!r.ok){recordStatus(r.body.message||`Read failed (${r.status}).`);return;}
+  recordState.lines=r.body.lines;const sold=r.body.lines.reduce((n,l)=>n+l.units_sold,0),ret=r.body.lines.reduce((n,l)=>n+Number(l.returned_units),0);
+  recordStatus(`Read ${r.body.lines.length} sale lines from Supabase: ${num(sold)} sold units, ${num(ret)} returned units. Lines with 2+ units are listed first.`);
+  const sorted=[...r.body.lines].sort((a,b)=>b.units_sold-a.units_sold||a.sale_date.localeCompare(b.sale_date));
+  $('record-lines').innerHTML=`<div class="table-scroll" tabindex="0" role="region" aria-label="Sale lines"><table class="record-table"><caption>sale_line_id is the stable record identity.</caption><thead><tr><th scope="col">sale_line_id</th><th scope="col">Sale date</th><th scope="col">units_sold</th><th scope="col">Returned</th><th scope="col"><span class="sr-only">Action</span></th></tr></thead><tbody>${sorted.map(l=>`<tr><th scope="row">${esc(l.sale_line_id)}</th><td>${esc(l.sale_date)}</td><td>${num(l.units_sold)}</td><td>${num(l.returned_units)}</td><td><button class="text-button" data-record-id="${esc(l.sale_line_id)}">Open ${esc(l.sale_line_id)}</button></td></tr>`).join('')}</tbody></table></div>`;
+ }catch{recordStatus('Sale lines could not be read. Nothing was changed.');}
+ finally{$('record-load-lines').disabled=false;}
+}
+function recordView(rec){
+ const last=rec.last_edit?`<p><strong>Last saved change:</strong> ${esc(rec.last_edit.old_value)} → ${esc(rec.last_edit.new_value)} at ${esc(rec.last_edit.edited_at)} · “${esc(rec.last_edit.reason)}” (${esc(rec.last_edit.label)})</p>`:'<p>No saved changes for this record.</p>';
+ return `<section class="record-card" aria-label="Current record"><h3>${esc(rec.sale_line_id)} · ${esc(rec.product_name)} · Size ${esc(rec.size)}</h3><dl class="record-fields"><div><dt>units_sold (current)</dt><dd class="record-value">${num(rec.units_sold)}</dd></div><div><dt>Linked returns</dt><dd>${num(rec.linked_returns)}</dd></div><div><dt>Net unit price</dt><dd>${usd(rec.net_unit_price_usd)}</dd></div><div><dt>Sales amount</dt><dd>${usd(rec.sales_amount_usd)}</dd></div><div><dt>Order / line</dt><dd>${esc(rec.order_id)} · ${esc(rec.order_line_number)}</dd></div><div><dt>Sale / delivered</dt><dd>${esc(rec.sale_date)} · ${esc(rec.delivered_date)}</dd></div><div><dt>Revision</dt><dd>${num(rec.revision)}</dd></div><div><dt>Read from Supabase</dt><dd>${esc(rec.read_at)}</dd></div></dl>${last}
+ <form id="record-edit" class="record-edit"><h3>Propose a change</h3><label for="record-new">New units_sold (integer ${Math.max(1,rec.linked_returns)}–20, must differ)</label><input id="record-new" type="number" inputmode="numeric" min="${Math.max(1,rec.linked_returns)}" max="20" step="1" required><label for="record-reason">Reason (10–500 characters; label it as a synthetic practice adjustment)</label><textarea id="record-reason" rows="3" minlength="10" maxlength="500" required></textarea><button class="button" type="submit">Review change →</button></form></section>`;
+}
+async function openRecord(id){
+ recordStatus(`Reading ${id}…`);
+ try{const r=await recordFetch(`${recordEndpoint}?id=${encodeURIComponent(id)}`);
+  if(!r.ok){recordStatus(r.body.message||`Read failed (${r.status}).`);return;}
+  recordState.record=r.body.record;recordState.review=null;
+  recordStatus(`Read ${id} from Supabase at ${r.body.record.read_at}. Current units_sold = ${r.body.record.units_sold}.`);
+  $('record-detail').innerHTML=recordView(r.body.record);$('record-detail').querySelector('h3')?.scrollIntoView({block:'nearest'});
+ }catch{recordStatus('The record could not be read. Nothing was changed.');}
+}
+function predict(rec,newUnits){
+ const delta=newUnits-rec.units_sold;
+ const all={start:MONTHS[0],end:MONTHS.at(-1),category:'',product:'',size:''};
+ const cell={...all,product:rec.product_id,size:rec.size};
+ const row=(label,t)=>{const after=t.sold+delta;return `<tr><th scope="row">${label}</th><td>${num(t.sold)} → <strong>${num(after)}</strong></td><td>${pct(t.rate)} → <strong>${pct(after?t.returned/after*100:null)}</strong></td><td>${num(t.returned)} (unchanged)</td></tr>`;};
+ return `<div class="table-scroll" tabindex="0" role="region" aria-label="Predicted effect"><table class="record-table"><caption>Predicted effect, full period Oct 2025–Sep 2026 (only eligible lines count).</caption><thead><tr><th scope="col">Scope</th><th scope="col">Sold units</th><th scope="col">Unit return rate</th><th scope="col">Returned units</th></tr></thead><tbody>${row('Overview · all products',analyze(data,all).totals)}${row(`${esc(rec.product_name)} · ${esc(rec.size)} (heatmap cell)`,analyze(data,cell).totals)}</tbody></table></div><p><strong>Should change:</strong> sold units and unit return rate in these scopes, the ${esc(rec.sale_date.slice(0,7))} monthly point, and this line's sales amount (${usd(rec.sales_amount_usd)} → ${usd(newUnits*rec.net_unit_price_usd)}). <strong>Should stay unchanged:</strong> returned units, refunded amount, fit-related share, reason mix, number of sales lines and all other products/sizes.</p>`;
+}
+function reviewChange(e){
+ e.preventDefault();const rec=recordState.record;if(!rec)return;
+ const newUnits=Number($('record-new').value),reason=$('record-reason').value.trim(),min=Math.max(1,rec.linked_returns);
+ if(!Number.isInteger(newUnits)||newUnits<min||newUnits>20||newUnits===rec.units_sold){recordStatus(`Enter a whole number from ${min} to 20 that differs from ${rec.units_sold}.`);$('record-new').focus();return;}
+ if(reason.length<10){recordStatus('Write a reason of at least 10 characters.');$('record-reason').focus();return;}
+ recordState.review={newUnits,reason};
+ $('record-detail').insertAdjacentHTML('beforeend',`<section class="record-review" id="record-review" tabindex="-1" aria-label="Review before saving"><h3>Review before saving</h3><dl class="record-fields"><div><dt>Record</dt><dd>public.sales · ${esc(rec.sale_line_id)}</dd></div><div><dt>Field</dt><dd>units_sold (and derived sales_amount_usd)</dd></div><div><dt>Old → new</dt><dd><strong>${num(rec.units_sold)} → ${num(newUnits)}</strong></dd></div><div><dt>Expected revision</dt><dd>${num(rec.revision)}</dd></div></dl><p><strong>Reason:</strong> ${esc(reason)}</p>${predict(rec,newUnits)}<p>Saving only succeeds if Supabase still has units_sold = ${num(rec.units_sold)} and revision ${num(rec.revision)}; otherwise you'll see a conflict and the latest value.</p><div class="email-buttons"><button class="button secondary" id="record-cancel" type="button">Cancel · nothing saved</button><button class="button" id="record-confirm" type="button">Confirm and save to Supabase</button></div></section>`);
+ $('record-edit').querySelectorAll('input,textarea,button').forEach(x=>x.disabled=true);
+ recordStatus('Review the exact change. Nothing has been saved yet.');$('record-review').focus();
+}
+async function confirmChange(){
+ const rec=recordState.record,rv=recordState.review;if(!rec||!rv)return;$('record-confirm').disabled=true;$('record-cancel').disabled=true;recordStatus('Saving…');
+ try{const r=await recordFetch(recordEndpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({operation:'update_units_sold',sale_line_id:rec.sale_line_id,expected_units:rec.units_sold,expected_revision:rec.revision,new_units:rv.newUnits,reason:rv.reason})});
+  if(r.status===409){recordState.record=r.body.current;recordState.review=null;$('record-detail').innerHTML=recordView(r.body.current);recordStatus(`Conflict: ${rec.sale_line_id} changed since you read it (now units_sold = ${r.body.current.units_sold}, revision ${r.body.current.revision}). Nothing was overwritten. Reconsider before proposing again.`);return;}
+  if(!r.ok){recordStatus(r.body.message||`Save failed (${r.status}). Nothing was saved.`);$('record-confirm').disabled=false;$('record-cancel').disabled=false;return;}
+  recordState.record=r.body.record;recordState.review=null;$('record-detail').innerHTML=recordView(r.body.record);
+  recordStatus(`Saved: ${rec.sale_line_id} units_sold ${rec.units_sold} → ${r.body.record.units_sold} (revision ${r.body.record.revision}, ${r.body.record.last_edit?.edited_at}). Refreshing dashboard data from Supabase…`);
+  await load();recordStatus(`Saved and dashboard re-read from Supabase. ${rec.sale_line_id}: units_sold ${rec.units_sold} → ${r.body.record.units_sold}, revision ${r.body.record.revision}. Close this dialog to check the changed figures.`);
+ }catch{recordStatus('The save request could not be completed. Read the record again before retrying.');}
+}
+function cancelChange(){recordState.review=null;$('record-review')?.remove();$('record-edit')?.querySelectorAll('input,textarea,button').forEach(x=>x.disabled=false);recordStatus('Cancelled. Nothing was saved.');$('record-new')?.focus();}
+document.addEventListener('click',e=>{
+ if(e.target.closest('[data-open-records]')){openRecords();return;}
+ const rid=e.target.closest('[data-record-id]');if(rid){openRecord(rid.dataset.recordId);return;}
+ if(e.target.closest('#record-cancel')){cancelChange();return;}
+ if(e.target.closest('#record-confirm')){confirmChange();return;}
+});
+document.addEventListener('submit',e=>{if(e.target.id==='record-edit')reviewChange(e);});
+$('record-load-lines').onclick=loadLines;
+$('record-dialog').addEventListener('close',()=>{$('record-phrase').value='';recordState.review=null;});
