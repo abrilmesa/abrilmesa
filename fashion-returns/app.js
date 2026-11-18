@@ -99,7 +99,7 @@ function products(a){
  <p class="chart-summary">Counts remain visible for small groups; no group is excluded by sample size. Zero sales = N/A; sales with no returns = 0%. Unreported return reasons remain in all returned-unit totals. Select a cell to prepare its evidence context.</p>
  <div class="table-scroll heatmap-scroll" tabindex="0" role="region" aria-label="Product by size rates; scroll horizontally if needed"><table class="heatmap"><caption>Product × size · original sales cohort · keyboard-operable cells</caption><thead><tr><th scope="col">PRODUCT</th>${d.sizes.map(z=>`<th scope="col">${z}</th>`).join('')}</tr></thead><tbody>${d.products.map(p=>`<tr><th scope="row">${esc(p.product_name)}</th>${d.sizes.map(z=>{const c=d.cells.find(c=>c.product_id===p.product_id&&c.size===z);return `<td><button data-product-select="${esc(p.product_id)}" data-size-select="${z}" style="background:hsl(276 24% ${c.rate===null?97:97-c.rate*.42}%)" aria-label="Select ${esc(p.product_name)} size ${z}: ${pct(c.rate)}, ${c.returned} returned of ${c.sold} sold"><strong>${pct(c.rate)}</strong><small>${c.returned} / ${c.sold}</small></button></td>`;}).join('')}</tr>`).join('')}</tbody></table></div></section>
  <section class="card diagnostic-section"><h2>Reconciliation to the selected overview cohort</h2><p class="chart-sub">Product and size groups are disjoint. Recompute percentages from their totals.</p><dl class="reconcile"><div><dt>Sold units</dt><dd>${num(d.products.reduce((n,p)=>n+p.sold,0))} / ${num(t.sold)} overview</dd></div><div><dt>Returned units</dt><dd>${num(d.products.reduce((n,p)=>n+p.returned,0))} / ${num(t.returned)} overview</dd></div><div><dt>Recomputed rate</dt><dd>${pct(t.rate)} = ${num(t.returned)} / ${num(t.sold)}</dd></div></dl></section>`}
- <section class="card diagnostic-section evidence-selection" aria-label="Selection for future record detail"><h2>${selected?'Evidence selection prepared':'Choose a product or size to investigate'}</h2><p>${selected?`${esc(selected.product_name)} · ${filters.size?'Size '+esc(filters.size):'All sizes'} · ${monthName(filters.start)}–${monthName(filters.end)} · ${num(t.sales_lines)} sales lines, ${num(t.sold)} sold units and ${num(t.returned)} returned units.`:'Use a product bar or heatmap cell. The shared filter summary and URL will retain the selected product and size.'}</p><p>Record-detail handoff: eligible original sales lines, including lines without returns, then sale_line_id → linked returns. Choose one product and one size, then open record detail to read and correct individual sale lines through the protected server path.</p>${selected?'<button class="button" data-download-selection>Download selection context</button>':''}${selected&&filters.size?' <button class="button" data-open-records>Open record detail →</button>':''} <button class="button secondary" data-view="reasons">Explore reported reasons →</button></section>`;
+ <section class="card diagnostic-section evidence-selection" aria-label="Selection for future record detail"><h2>${selected?'Evidence selection prepared':'Choose a product or size to investigate'}</h2><p>${selected?`${esc(selected.product_name)} · ${filters.size?'Size '+esc(filters.size):'All sizes'} · ${monthName(filters.start)}–${monthName(filters.end)} · ${num(t.sales_lines)} sales lines, ${num(t.sold)} sold units and ${num(t.returned)} returned units.`:'Use a product bar or heatmap cell. The shared filter summary and URL will retain the selected product and size.'}</p><p>Record-detail handoff: eligible original sales lines, including lines without returns, then sale_line_id → linked returns. Choose one product and one size, then open record detail to read and correct individual sale lines through the protected server path.</p>${selected?'<button class="button" data-download-selection>Download selection context</button>':''}${selected&&filters.size?' <button class="button" data-open-records>Open record detail →</button> <button class="button" data-open-trello>Create follow-up task →</button>':''} <button class="button secondary" data-view="reasons">Explore reported reasons →</button></section>`;
 }
 const reasonColors={Fit:'#665078',Quality:'#a9775b',Preference:'#466e73',Expectations:'#596a39',Unknown:'#77717b'};
 const signed=value=>`${value>0?'+':''}${value.toFixed(2)} pp`;
@@ -133,7 +133,7 @@ function reasons(a){
  <section class="card diagnostic-section evidence-selection" id="reason-evidence" tabindex="-1" aria-label="Local reason evidence selection"><h2>${selected?'Local evidence selection':'Select a reason or a month/group segment'}</h2><p>${selected?`${reasonEvidence.month?monthName(reasonEvidence.month):'All selected sale months'} · ${esc(reasonEvidence.code?d.reasons.find(r=>r.code===reasonEvidence.code)?.name||reasonEvidence.code:reasonEvidence.group||'All reported reasons')} · ${num(count)} returned units in matching aggregates.`:'No local evidence filter. Headline KPIs always describe the full shared cohort.'}</p><p>Shared cohort: ${num(t.returned)} returned / ${num(t.sold)} sold. Local evidence selection does not alter either denominator. Matching return_id → original sale_line_id access will be added in the record-detail layer; individual records are not exposed in this version.</p>${selected?'<button class="button secondary" data-clear-evidence>Clear evidence selection</button>':''} <button class="button secondary" data-view="products">Compare products & sizes →</button></section>`;
 }
 function matchesReasonEvidence(r){return (r.month>=filters.start&&r.month<=filters.end)&&(!filters.category||r.category===filters.category)&&(!filters.product||r.product_id===filters.product)&&(!filters.size||r.size===filters.size)&&(!reasonEvidence.code||r.reason_code===reasonEvidence.code)&&(!reasonEvidence.group||r.reason_group===reasonEvidence.group)&&(!reasonEvidence.month||r.month===reasonEvidence.month);}
-function render({push=false}={}){if(!data)return;const a=analyze(data,filters);$('content').innerHTML=journeyScope()+(view==='overview'?overview(a):view==='products'?products(a):reasons(a));const names={overview:['LEVEL 1 · EXECUTIVE OVERVIEW','Returns overview','Understand the trend. Choose where to investigate.'],products:['LEVEL 2 · PRODUCT DIAGNOSIS','Products & sizes','Compare rates with the volumes behind them.'],reasons:['LEVEL 2 · REASON & COHORT DIAGNOSIS','Return reasons & cohort mix','Separate the observed pattern from a possible explanation.']};$('level-label').textContent=names[view][0];$('page-title').innerHTML=names[view][1]+'<span>.</span>';$('page-subtitle').textContent=names[view][2];document.querySelectorAll('nav [data-view]').forEach(b=>{b.classList.toggle('active',b.dataset.view===view);if(b.dataset.view===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});$('context').textContent=`Sales: ${monthName(filters.start)} – ${monthName(filters.end)} · ${filters.category||'All categories'} · ${$('product').selectedOptions[0]?.textContent||'All products'} · ${filters.size?`Size ${filters.size}`:'All sizes'} · ${num(a.totals.sales_lines)} sales lines · ${num(a.totals.sold)} sold units`;$('source-status').textContent=source==='supabase'?'● Connected to Supabase · foundation v1.1':'● LOCAL PREVIEW · validated synthetic snapshot';$('freshness').textContent=`Foundation validated ${data.validated_on} · Historical observation cutoff ${data.business_as_of} · ${source==='supabase'?'Last successful data read':'Local preview loaded'} ${new Date(retrievedAt).toLocaleString('en-GB',{timeZoneName:'short'})}. No scheduled refresh.`;saveUrl(push);}
+function render({push=false}={}){if(!data)return;const a=analyze(data,filters);$('content').innerHTML=journeyScope()+(view==='overview'?overview(a):view==='products'?products(a):reasons(a));const names={overview:['LEVEL 1 · EXECUTIVE OVERVIEW','Returns overview','Understand the trend. Choose where to investigate.'],products:['LEVEL 2 · PRODUCT DIAGNOSIS','Products & sizes','Compare rates with the volumes behind them.'],reasons:['LEVEL 2 · REASON & COHORT DIAGNOSIS','Return reasons & cohort mix','Separate the observed pattern from a possible explanation.']};$('level-label').textContent=names[view][0];$('page-title').innerHTML=names[view][1]+'<span>.</span>';$('page-subtitle').textContent=names[view][2];document.querySelectorAll('nav [data-view]').forEach(b=>{b.classList.toggle('active',b.dataset.view===view);if(b.dataset.view===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});$('context').textContent=`Sales: ${monthName(filters.start)} – ${monthName(filters.end)} · ${filters.category||'All categories'} · ${$('product').selectedOptions[0]?.textContent||'All products'} · ${filters.size?`Size ${filters.size}`:'All sizes'} · ${num(a.totals.sales_lines)} sales lines · ${num(a.totals.sold)} sold units`;$('source-status').textContent=source==='supabase'?'● Connected to Supabase · foundation v1.1':'● LOCAL PREVIEW · validated synthetic snapshot';$('freshness').textContent=`Foundation validated ${data.validated_on} · Historical observation cutoff ${data.business_as_of} · ${source==='supabase'?'Last successful data read':'Local preview loaded'} ${new Date(retrievedAt).toLocaleString('en-GB',{timeZoneName:'short'})}. No scheduled refresh.${data.practice_edits?.edit_count?` Includes ${data.practice_edits.edit_count} logged synthetic practice edit(s): ${data.practice_edits.eligible_units_delta>0?'+':''}${data.practice_edits.eligible_units_delta} sold units vs foundation v1.1 (last ${data.practice_edits.last_edited_at}).`:''}`;saveUrl(push);}
 async function load({focusAfter=false}={}){const hadData=Boolean(data);setBusy(true);notice('');let phase='request';try{
   const snapshot=new URLSearchParams(location.search).get('preview')==='snapshot';
   const cfg=window.FASHION_CONFIG||{};let response;
@@ -279,3 +279,81 @@ document.addEventListener('click',e=>{
 document.addEventListener('submit',e=>{if(e.target.id==='record-edit')reviewChange(e);});
 $('record-load-lines').onclick=loadLines;
 $('record-dialog').addEventListener('close',()=>{$('record-phrase').value='';recordState.review=null;});
+
+// Week3 Exercise 3: finding → reviewed Trello card (server path /api/fashion-trello).
+const trelloEndpoint='/api/fashion-trello';
+let trelloState={context:null,destination:null,review:null,card:null};
+const trelloAuth=()=>({Authorization:`Bearer ${$('trello-phrase').value}`});
+function trelloStatus(m){$('trello-status').textContent=m;}
+async function trelloPost(body){const r=await fetch(trelloEndpoint,{method:'POST',cache:'no-store',signal:AbortSignal.timeout(20000),headers:{'Content-Type':'application/json',...trelloAuth()},body:JSON.stringify(body)});let b={};try{b=await r.json();}catch{}return {ok:r.ok,status:r.status,body:b};}
+function trelloDraft(){
+ const all={start:filters.start,end:filters.end,category:'',product:'',size:''};
+ const sel=analyze(data,filters).totals,prod=analyze(data,{...all,product:filters.product}).totals,overall=analyze(data,all).totals;
+ const name=data.cohorts.find(r=>r.product_id===filters.product)?.product_name||filters.product;
+ const period=`${monthName(filters.start)}–${monthName(filters.end)}`;
+ const link=`${location.origin}/#${new URLSearchParams({view:'products',start:filters.start,end:filters.end,product:filters.product,size:filters.size})}`;
+ trelloState.context={name,size:filters.size,period,sel,prod,overall,link};
+ const title=`Investigate high returns: ${name} size ${filters.size} (${pct(sel.rate)} unit return rate)`;
+ const desc=`**Evidence (Fashion Returns dashboard, synthetic data, ${data.contract||'foundation-v1.1'})**
+- Selection: ${name} · size ${filters.size} · original sales ${period}
+- Unit return rate: ${pct(sel.rate)} (${num(sel.returned)} returned / ${num(sel.sold)} sold units, ${num(sel.sales_lines)} sales lines)
+- Same product, all sizes: ${pct(prod.rate)} (${num(prod.returned)} / ${num(prod.sold)})
+- All products: ${pct(overall.rate)} (${num(overall.returned)} / ${num(overall.sold)})
+- Fit-related share for this selection: ${pct(sel.fitShare)} (${num(sel.fit)} / ${num(sel.returned)} returned units)
+- Small group: ${num(sel.sold)} sold units, so one or two returns move the rate noticeably.
+- Dashboard view: ${link}
+
+**Requested next step**
+Review the returned units for this product and size (reasons, return comments, size chart and product page) and check whether a sizing, quality or listing issue explains the gap versus the other sizes. Reported reasons are clues, not proof of causes.
+
+**Useful response**
+Reply on this card with: what you checked, the likely explanation (or "no clear cause"), and a recommended action (e.g. size-chart change, product-page note, supplier check, or no action) with an owner and date.`;
+ $('trello-card-title').value=title;$('trello-card-desc').value=desc;
+ $('trello-scope').textContent=`${name} · Size ${filters.size} · ${period} · ${pct(sel.rate)} (${num(sel.returned)}/${num(sel.sold)}) vs ${pct(prod.rate)} for the product and ${pct(overall.rate)} overall.`;
+}
+function destinationView(d,t){return `<dl class="record-fields trello-dest"><div><dt>Board</dt><dd>${esc(d.boardName)}</dd></div><div><dt>Destination list</dt><dd><strong>${esc(d.listName)}</strong></dd></div><div><dt>List ID</dt><dd>${esc(d.listId)}</dd></div>${t?`<div><dt>Token expires</dt><dd>${esc(t.expires)}</dd></div><div><dt>Token permissions</dt><dd>${esc(t.permissions.join(', ')||'n/a')}</dd></div>`:''}</dl>`;}
+function openTrello(){
+ if(!data||!filters.product||!filters.size)return;
+ trelloState={context:null,destination:null,review:null,card:null};$('trello-destination').innerHTML='';$('trello-review').innerHTML='';
+ $('trello-form').querySelectorAll('input,textarea,button').forEach(x=>x.disabled=false);
+ trelloDraft();trelloStatus('Checking server settings…');$('trello-dialog').showModal();
+ fetch(trelloEndpoint,{cache:'no-store'}).then(r=>r.json()).then(s=>trelloStatus(s.message)).catch(()=>trelloStatus('The Trello endpoint is unavailable. Check the deployed Vercel project.'));
+}
+async function inspectTrello(){
+ $('trello-inspect').disabled=true;trelloStatus('Inspecting destination (read-only)…');
+ try{const r=await trelloPost({operation:'inspect'});
+  if(r.body.state==='list_needed'){trelloStatus(r.body.message);$('trello-destination').innerHTML=`<div class="table-scroll" tabindex="0" role="region" aria-label="Lists your token can reach"><table class="record-table"><caption>Token expires: ${esc(r.body.token.expires)} · permissions: ${esc(r.body.token.permissions.join(', '))}</caption><thead><tr><th scope="col">Board</th><th scope="col">List</th><th scope="col">List ID</th></tr></thead><tbody>${r.body.boards.flatMap(b=>b.lists.map(l=>`<tr><td>${esc(b.boardName)}</td><td>${esc(l.listName)}</td><td><code>${esc(l.listId)}</code></td></tr>`)).join('')}</tbody></table></div>`;return;}
+  if(!r.ok){trelloStatus(r.body.message||`Check failed (${r.status}). No card was created.`);return;}
+  trelloState.destination=r.body.destination;
+  trelloStatus(`${r.body.message} Checked ${r.body.checkedAt}.`);$('trello-destination').innerHTML=destinationView(r.body.destination,r.body.token);
+ }catch{trelloStatus('The destination check could not be completed. No card was created.');}
+ finally{$('trello-inspect').disabled=false;}
+}
+function reviewTrello(e){
+ e.preventDefault();
+ if(trelloState.card){trelloStatus('A card was already created from this dialog. Open it instead of creating a duplicate.');return;}
+ if(!trelloState.destination){trelloStatus('Check the destination first so you can review exactly where the card will go.');$('trello-inspect').focus();return;}
+ const title=$('trello-card-title').value.trim(),desc=$('trello-card-desc').value.trim();
+ if(!title||/[\r\n]/.test(title)||!desc){trelloStatus('Write a one-line title and a description.');return;}
+ trelloState.review={title,desc};$('trello-form').querySelectorAll('input,textarea,button').forEach(x=>x.disabled=true);
+ $('trello-review').innerHTML=`<section class="record-review" id="trello-review-box" tabindex="-1" aria-label="Review before creating"><h3>Review before creating</h3>${destinationView(trelloState.destination)}<p><strong>Title:</strong> ${esc(title)}</p><pre class="trello-desc">${esc(desc)}</pre><p>One card will be created at the top of this list. Nothing is assigned; creation does not mean the task is done.</p><div class="email-buttons"><button class="button secondary" id="trello-cancel" type="button">Cancel · no card created</button><button class="button" id="trello-confirm" type="button">Create card in “${esc(trelloState.destination.listName)}”</button></div></section>`;
+ trelloStatus('Review the exact destination and content. No card has been created yet.');$('trello-review-box').focus();
+}
+function cancelTrello(){trelloState.review=null;$('trello-review').innerHTML='';$('trello-form').querySelectorAll('input,textarea,button').forEach(x=>x.disabled=false);trelloStatus('Cancelled. No card was created.');$('trello-card-title').focus();}
+async function confirmTrello(){
+ const rv=trelloState.review;if(!rv||trelloState.card)return;$('trello-confirm').disabled=true;$('trello-cancel').disabled=true;trelloStatus('Creating card…');
+ try{const r=await trelloPost({operation:'create_card',expected_list_id:trelloState.destination.listId,title:rv.title,description:rv.desc});
+  if(!r.ok){trelloStatus(r.body.message||`Creation failed (${r.status}). Check the board before retrying.`);$('trello-cancel').disabled=false;return;}
+  trelloState.card=r.body.card;
+  $('trello-review').innerHTML=`<section class="record-card" aria-label="Created card"><h3>Card created</h3><dl class="record-fields"><div><dt>Card ID</dt><dd>${esc(r.body.card.id)}</dd></div><div><dt>Board / list</dt><dd>${esc(r.body.destination.boardName)} / ${esc(r.body.destination.listName)}</dd></div><div><dt>Created</dt><dd>${esc(r.body.createdAt)}</dd></div><div><dt>Content matches review</dt><dd>${r.body.card.name===rv.title&&r.body.card.desc.trim()===rv.desc?'Yes (title and description returned by Trello)':'No — compare in Trello'}</dd></div></dl><p><a class="button" href="${esc(r.body.card.url)}" target="_blank" rel="noopener">Open card in Trello ↗</a></p><p>${esc(r.body.message)}</p></section>`;
+  trelloStatus(`Card created in ${r.body.destination.listName}. Open it in Trello to verify.`);
+ }catch{trelloStatus('The request could not be completed. Check the Trello list before retrying to avoid a duplicate.');}
+}
+document.addEventListener('click',e=>{
+ if(e.target.closest('[data-open-trello]')){openTrello();return;}
+ if(e.target.closest('#trello-cancel')){cancelTrello();return;}
+ if(e.target.closest('#trello-confirm')){confirmTrello();return;}
+});
+document.addEventListener('submit',e=>{if(e.target.id==='trello-form'){reviewTrello(e);}});
+$('trello-inspect').onclick=inspectTrello;
+$('trello-dialog').addEventListener('close',()=>{$('trello-phrase').value='';});
